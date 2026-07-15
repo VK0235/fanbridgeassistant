@@ -1,0 +1,208 @@
+{
+  "venues": [
+    {
+      "id": "metlife",
+      "name": "MetLife Stadium",
+      "city": "East Rutherford, NJ",
+      "country": "USA",
+      "capacity": 82500,
+      "final_host": true,
+      "gates": [
+        {"id": "Gate A", "zone": "North", "type": "General Entry", "accessible": true, "wait_status": "low", "wait_minutes": 3, "coordinates": {"x": 50, "y": 10}},
+        {"id": "Gate B", "zone": "East", "type": "General Entry", "accessible": false, "wait_status": "high", "wait_minutes": 22, "coordinates": {"x": 90, "y": 50}},
+        {"id": "Gate C", "zone": "South", "type": "VIP/Premium", "accessible": true, "wait_status": "medium", "wait_minutes": 12, "coordinates": {"x": 50, "y": 90}},
+        {"id": "Gate D", "zone": "West", "type": "Accessible Entry", "accessible": true, "wait_status": "low", "wait_minutes": 4, "coordinates": {"x": 10, "y": 50}},
+        {"id": "Gate E", "zone": "North-East", "type": "General Entry", "accessible": false, "wait_status": "critical", "wait_minutes": 35, "coordinates": {"x": 75, "y": 20}},
+        {"id": "Gate F", "zone": "Staff/Media", "type": "Accreditation", "accessible": true, "wait_status": "low", "wait_minutes": 2, "coordinates": {"x": 30, "y": 15}}
+      ],
+      "crowd_zones": [
+        {"zone": "North Concourse", "density": "low", "density_pct": 28, "recommendation": "Good route, minimal congestion. Estimated 3 min walk to lower bowl."},
+        {"zone": "East Concourse", "density": "high", "density_pct": 87, "recommendation": "Avoid 30 min pre-kickoff. Use North Concourse instead — saves 18 minutes."},
+        {"zone": "South Plaza", "density": "medium", "density_pct": 55, "recommendation": "Moderate flow. Food courts busy but moving. Expect 8-min wait."},
+        {"zone": "West Plaza", "density": "low", "density_pct": 22, "recommendation": "Optimal for wheelchair users and families. Clear sightlines to Gate D."},
+        {"zone": "Level 2 Concourse", "density": "medium", "density_pct": 62, "recommendation": "Midfield sections busy. Use elevators at Gates A & C."},
+        {"zone": "Upper Bowl Ramps", "density": "high", "density_pct": 79, "recommendation": "Congested. Allow extra 15 min if seating in Sections 300+."}
+      ],
+      "accessibility": {
+        "wheelchair_entries": ["Gate A", "Gate C", "Gate D", "Gate F"],
+        "sensory_room": "Level 2, near Gate D — quiet space with low stimulation",
+        "accessible_parking": "West Lot P4 — 450 reserved spots, pre-booking required",
+        "companion_seating": "Sections 105, 210, 318 — extra-wide spaces with sight-line guarantee",
+        "elevator_locations": ["Gate A Level 1-3", "Gate C Level 1-4", "Gate D Level 1-2"],
+        "audio_description": "Available via FanBridge app — select your seat number to activate",
+        "braille_maps": "Available at Guest Services, Gate C"
+      },
+      "transport": {
+        "shuttle_routes": [
+          {"route": "Shuttle 1", "from": "Penn Station (NYC)", "frequency_min": 8, "status": "on-time", "capacity_pct": 65},
+          {"route": "Shuttle 2", "from": "Newark Airport Terminal B", "frequency_min": 15, "status": "delayed 12 min", "capacity_pct": 90},
+          {"route": "Shuttle 3", "from": "Secaucus Junction", "frequency_min": 5, "status": "on-time", "capacity_pct": 45},
+          {"route": "Shuttle 4", "from": "Giants/Jets Stadium Overflow Lot", "frequency_min": 10, "status": "on-time", "capacity_pct": 30}
+        ],
+        "parking_lots": [
+          {"name": "North Lot", "status": "full", "spaces": 0, "total": 2500},
+          {"name": "West Lot P4", "status": "available", "spaces": 320, "total": 800},
+          {"name": "South Lot", "status": "available", "spaces": 150, "total": 1200},
+          {"name": "Remote Lot R1", "status": "available", "spaces": 800, "total": 1000}
+        ],
+        "rideshare_zone": "Gate B East side — Uber/Lyft dropoff Zone R1",
+        "NJ_transit_line": "Meadowlands Rail — direct from Penn Station, $5 each way"
+      },
+      "sustainability": {
+        "recycling_points": ["Gate A", "Gate B", "Gate C", "Gate D", "All concourse level corridors (every 50m)"],
+        "water_refill_stations": 24,
+        "solar_panels": "Roof panels generate 40% of matchday power",
+        "carbon_tip": "Taking NJ Transit saves ~2.4 kg CO₂ vs driving solo. Shuttle 1 is the greenest option.",
+        "waste_diversion_target": "85% landfill diversion — compostable cups and plates used throughout"
+      }
+    },
+    {
+      "id": "sofi",
+      "name": "SoFi Stadium",
+      "city": "Inglewood, CA",
+      "country": "USA",
+      "capacity": 70240,
+      "final_host": false,
+      "gates": [
+        {"id": "Gate 1", "zone": "North", "type": "General Entry", "accessible": true, "wait_status": "low", "wait_minutes": 5, "coordinates": {"x": 50, "y": 10}},
+        {"id": "Gate 2", "zone": "East", "type": "General Entry", "accessible": true, "wait_status": "medium", "wait_minutes": 14, "coordinates": {"x": 90, "y": 50}},
+        {"id": "Gate 3", "zone": "South", "type": "VIP", "accessible": true, "wait_status": "low", "wait_minutes": 6, "coordinates": {"x": 50, "y": 90}},
+        {"id": "Gate 4", "zone": "West", "type": "General Entry", "accessible": false, "wait_status": "high", "wait_minutes": 28, "coordinates": {"x": 10, "y": 50}}
+      ],
+      "crowd_zones": [
+        {"zone": "North Pedestrian Bridge", "density": "medium", "density_pct": 58, "recommendation": "Main fan approach from Hollywood Park. Clear at 60 min before kickoff."},
+        {"zone": "East Plaza", "density": "low", "density_pct": 30, "recommendation": "Fan park with live screens. Great for pre-match atmosphere."},
+        {"zone": "South Tunnel Entry", "density": "high", "density_pct": 82, "recommendation": "VIP and premium access. Use Gate 1 if you have flex tickets."},
+        {"zone": "West Concourse", "density": "high", "density_pct": 76, "recommendation": "Busy near food hall. Visit concessions 45+ min before kickoff."}
+      ],
+      "accessibility": {
+        "wheelchair_entries": ["Gate 1", "Gate 2", "Gate 3"],
+        "sensory_room": "Level 1, Section 119",
+        "accessible_parking": "Lot G — 300 accessible spots, $45 pre-paid",
+        "companion_seating": "Sections 117, 215, 310",
+        "elevator_locations": ["Gate 1 East Tower", "Gate 3 West Tower"],
+        "audio_description": "Via FanBridge app",
+        "braille_maps": "At Guest Services Kiosk, Gate 1"
+      },
+      "transport": {
+        "shuttle_routes": [
+          {"route": "Metro Express", "from": "LAX Station (Crenshaw Line)", "frequency_min": 6, "status": "on-time", "capacity_pct": 70},
+          {"route": "Fan Shuttle LA", "from": "Santa Monica Pier", "frequency_min": 20, "status": "on-time", "capacity_pct": 40}
+        ],
+        "parking_lots": [
+          {"name": "Lot A (SoFi)", "status": "full", "spaces": 0, "total": 3000},
+          {"name": "Lot G (Accessible)", "status": "available", "spaces": 120, "total": 300},
+          {"name": "Remote Park & Ride", "status": "available", "spaces": 500, "total": 1500}
+        ],
+        "rideshare_zone": "South access road, Zone R2",
+        "NJ_transit_line": "Metro Crenshaw/LAX Line — 12 min from LAX"
+      },
+      "sustainability": {
+        "recycling_points": ["All gate entries", "Every concourse level"],
+        "water_refill_stations": 20,
+        "solar_panels": "Translucent roof generates 25% of matchday power",
+        "carbon_tip": "LA Metro is the greenest option — zero emissions, 6-min frequency from LAX.",
+        "waste_diversion_target": "90% landfill diversion — partnership with LA Compost"
+      }
+    },
+    {
+      "id": "azteca",
+      "name": "Estadio Azteca",
+      "city": "Mexico City",
+      "country": "Mexico",
+      "capacity": 87523,
+      "final_host": false,
+      "gates": [
+        {"id": "Puerta 1", "zone": "Norte", "type": "Entrada General", "accessible": true, "wait_status": "high", "wait_minutes": 25, "coordinates": {"x": 50, "y": 10}},
+        {"id": "Puerta 2", "zone": "Sur", "type": "VIP", "accessible": true, "wait_status": "medium", "wait_minutes": 10, "coordinates": {"x": 50, "y": 90}},
+        {"id": "Puerta 3", "zone": "Oriente", "type": "Entrada General", "accessible": false, "wait_status": "critical", "wait_minutes": 40, "coordinates": {"x": 90, "y": 50}},
+        {"id": "Puerta 4", "zone": "Poniente", "type": "Accesible", "accessible": true, "wait_status": "low", "wait_minutes": 5, "coordinates": {"x": 10, "y": 50}}
+      ],
+      "crowd_zones": [
+        {"zone": "Explanada Norte", "density": "high", "density_pct": 88, "recommendation": "Muy concurrida. Usar Puerta 4 o llegar 90 min antes."},
+        {"zone": "Zona Sur Premium", "density": "low", "density_pct": 25, "recommendation": "Flujo tranquilo. Acceso VIP confirmado en Puerta 2."},
+        {"zone": "Corredor Oriente", "density": "critical", "density_pct": 95, "recommendation": "EVITAR. Redirigir a Explanada Norte o Puerta 4."},
+        {"zone": "Plaza Poniente", "density": "medium", "density_pct": 52, "recommendation": "Moderado. Mejor opción para familias y accesibilidad."}
+      ],
+      "accessibility": {
+        "wheelchair_entries": ["Puerta 2", "Puerta 4"],
+        "sensory_room": "Nivel Baja, cerca Puerta 4",
+        "accessible_parking": "Estacionamiento Poniente — 200 lugares reservados",
+        "companion_seating": "Secciones 15, 28, 42",
+        "elevator_locations": ["Puerta 2 Torres Este/Oeste"],
+        "audio_description": "Disponible en app FanBridge",
+        "braille_maps": "En Servicios al Visitante, Puerta 2"
+      },
+      "transport": {
+        "shuttle_routes": [
+          {"route": "Metro Línea 2", "from": "Centro Histórico (Taxqueña)", "frequency_min": 4, "status": "on-time", "capacity_pct": 85},
+          {"route": "Shuttle Oficial FIFA", "from": "Aeropuerto NAICM", "frequency_min": 30, "status": "on-time", "capacity_pct": 60}
+        ],
+        "parking_lots": [
+          {"name": "Estacionamiento Norte", "status": "full", "spaces": 0, "total": 5000},
+          {"name": "Estacionamiento Poniente", "status": "available", "spaces": 200, "total": 1200}
+        ],
+        "rideshare_zone": "Acceso Sur, Zona Uber/DiDi",
+        "NJ_transit_line": "Metro Línea 2 — parada Estadio Azteca directa"
+      },
+      "sustainability": {
+        "recycling_points": ["Todas las puertas", "Cada nivel de concourse"],
+        "water_refill_stations": 30,
+        "solar_panels": "Paneles solares en techos generan 15% de energía",
+        "carbon_tip": "El Metro de CDMX es la opción más sustentable — 4 min de frecuencia.",
+        "waste_diversion_target": "80% de desviación de residuos — compostaje activo"
+      }
+    }
+  ],
+  "default_venue": "metlife",
+  "supported_languages": [
+    "English", "Spanish", "Telugu", "Hindi", "French", "Portuguese",
+    "Arabic", "German", "Japanese", "Korean", "Italian", "Dutch",
+    "Mandarin Chinese", "Russian", "Turkish"
+  ],
+  "operations": {
+    "medical_points": [
+      {"location": "North Concourse, near Gate A", "staffed": true, "type": "First Aid"},
+      {"location": "South Plaza, near Gate C", "staffed": true, "type": "Full Medical"},
+      {"location": "East Concourse Level 2", "staffed": true, "type": "First Aid"},
+      {"location": "West Plaza Fan Zone", "staffed": true, "type": "Triage Unit"}
+    ],
+    "security_contact": "Dial extension 911 from any venue phone, or approach staff in RED vests. Security command is at Gate A.",
+    "lost_and_found": "Guest Services desk, Level 1, near Gate C. Open 2h before kickoff to 1h after final whistle.",
+    "lost_child_protocol": "Alert ANY staff member immediately. Children's reunification point: Guest Services Level 1, Gate C. PA announcement will be made. All children are wristbanded at entry.",
+    "emergency_note": "For life-threatening emergencies, dial 911 (US) or 112 (EU) first, then notify venue staff in red vests. AED units are at every gate.",
+    "volunteer_posts": [
+      {"id": "V1", "zone": "Gate A Exterior", "role": "Ticketing Support", "headcount": 8},
+      {"id": "V2", "zone": "East Concourse", "role": "Crowd Flow Management", "headcount": 12},
+      {"id": "V3", "zone": "Accessibility Services", "role": "Wheelchair Assistance", "headcount": 6},
+      {"id": "V4", "zone": "Fan Information Kiosks", "role": "Multilingual Assistance", "headcount": 10},
+      {"id": "V5", "zone": "Sustainability Stations", "role": "Recycling Guidance", "headcount": 5},
+      {"id": "V6", "zone": "Medical Response", "role": "First Responder Support", "headcount": 4}
+    ],
+    "staff_alerts": [
+      {"id": "A1", "severity": "high", "zone": "East Concourse", "message": "Crowd density at 87% — deploy 4 additional flow managers immediately", "timestamp": "2026-07-15T09:45:00Z"},
+      {"id": "A2", "severity": "medium", "zone": "Gate B", "message": "Wait time exceeding 20 min — open auxiliary lane 2B", "timestamp": "2026-07-15T09:50:00Z"},
+      {"id": "A3", "severity": "low", "zone": "Shuttle Route 2", "message": "Airport shuttle delayed 12 min — update digital signage", "timestamp": "2026-07-15T09:55:00Z"}
+    ],
+    "aed_locations": ["Gate A interior", "Gate B exterior", "Gate C interior", "Gate D exterior", "North Concourse Level 1", "South Plaza", "Level 2 Central Hub"],
+    "public_emergency_numbers": {
+      "US": "911",
+      "Mexico": "911",
+      "Canada": "911",
+      "EU": "112"
+    }
+  },
+  "match_schedule": [
+    {"match_id": "QF1", "date": "2026-07-15", "time": "18:00 ET", "home": "Brazil", "away": "Germany", "venue_id": "metlife", "status": "today"},
+    {"match_id": "QF2", "date": "2026-07-15", "time": "21:00 PT", "home": "Argentina", "away": "France", "venue_id": "sofi", "status": "today"},
+    {"match_id": "SF1", "date": "2026-07-18", "time": "18:00 ET", "home": "TBD", "away": "TBD", "venue_id": "metlife", "status": "upcoming"},
+    {"match_id": "F1", "date": "2026-07-26", "time": "17:00 ET", "home": "TBD", "away": "TBD", "venue_id": "metlife", "status": "upcoming"}
+  ],
+  "analytics": {
+    "total_fans_today": 124680,
+    "avg_satisfaction_score": 4.2,
+    "queries_handled": 8432,
+    "top_questions": ["Which gate is fastest?", "Where is accessible parking?", "Shuttle from Penn Station?", "Where to recycle?", "Lost child protocol?"],
+    "languages_used": {"English": 45, "Spanish": 28, "Portuguese": 12, "French": 8, "Hindi": 4, "Telugu": 3}
+  }
+}
