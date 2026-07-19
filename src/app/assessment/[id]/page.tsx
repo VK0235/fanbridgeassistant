@@ -72,6 +72,10 @@ export default function AssessmentPage({ params }: PageProps) {
   const animationFrameRef = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
+  // --- Section A 25-Second Recording Timer ---
+  const [recordingTimeLeft, setRecordingTimeLeft] = useState(25);
+  const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   // --- Text-to-Speech Playback ---
   const [audioPlayedCount, setAudioPlayedCount] = useState<Record<string, number>>({});
   const [isTTSPlaying, setIsTTSPlaying] = useState(false);
@@ -230,7 +234,23 @@ export default function AssessmentPage({ params }: PageProps) {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      const mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      // Negotiate MIME Type for iOS / Android / Safari compatibility
+      let mimeType = "audio/webm";
+      if (typeof MediaRecorder !== "undefined") {
+        if (MediaRecorder.isTypeSupported("audio/webm")) {
+          mimeType = "audio/webm";
+        } else if (MediaRecorder.isTypeSupported("audio/mp4")) {
+          mimeType = "audio/mp4";
+        } else if (MediaRecorder.isTypeSupported("audio/ogg")) {
+          mimeType = "audio/ogg";
+        } else {
+          mimeType = "";
+        }
+      }
+
+      const mediaRecorder = mimeType 
+        ? new MediaRecorder(stream, { mimeType }) 
+        : new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
 
       const chunks: Blob[] = [];
@@ -239,7 +259,7 @@ export default function AssessmentPage({ params }: PageProps) {
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: "audio/webm" });
+        const blob = new Blob(chunks, { type: mimeType || "audio/webm" });
         setRecordingBlob(blob);
         setRecordingUrl(URL.createObjectURL(blob));
         cleanupAudioNodes();
@@ -273,12 +293,32 @@ export default function AssessmentPage({ params }: PageProps) {
       mediaRecorder.start();
       setIsRecording(true);
       updateVolume();
+
+      // Trigger 25s auto-stop countdown for Section A speech questions
+      if (currentSection === "A") {
+        setRecordingTimeLeft(25);
+        if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = setInterval(() => {
+          setRecordingTimeLeft((prev) => {
+            if (prev <= 1) {
+              if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+              stopRecording();
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      }
     } catch (err) {
       console.error("Recording start failed:", err);
     }
   };
 
   const stopRecording = () => {
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
@@ -301,6 +341,7 @@ export default function AssessmentPage({ params }: PageProps) {
     setRecordingBlob(null);
     setRecordingUrl(null);
     setIsRecording(false);
+    setRecordingTimeLeft(25);
   };
 
   // --- Text-to-Speech Playback ---
@@ -1210,8 +1251,17 @@ export default function AssessmentPage({ params }: PageProps) {
                         </button>
                       </div>
 
-                      <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                        {isRecording ? `Recording Live... Mic: ${micVolume}%` : "Click to Speak"}
+                      <div className="text-xs font-bold uppercase tracking-wider text-slate-400 text-center">
+                        {isRecording ? (
+                          <div className="space-y-1">
+                            <span className="text-rose-600 animate-pulse block">Recording Live... Mic: {micVolume}%</span>
+                            <span className="text-[10px] text-slate-400 tracking-wide font-normal normal-case block">
+                              Auto-submits in: <span className="font-extrabold text-[#0033a0] text-xs">{recordingTimeLeft}s</span>
+                            </span>
+                          </div>
+                        ) : (
+                          "Click to Speak"
+                        )}
                       </div>
                     </>
                   ) : (

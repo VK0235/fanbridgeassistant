@@ -37,62 +37,62 @@ export const sectionAQuestions: SpeechQuestion[] = [
   {
     id: "A1",
     type: "sentence-reading",
-    text: "Last year, the best author received a cash prize and a trophy.",
-    expectedText: "Last year, the best author received a cash prize and a trophy."
+    text: "Cats are very clean and quiet animals.",
+    expectedText: "Cats are very clean and quiet animals."
   },
   {
     id: "A2",
     type: "sentence-reading",
-    text: "After his retirement, his decision is to immediately satisfy his ardent desire of becoming a navigator.",
-    expectedText: "After his retirement, his decision is to immediately satisfy his ardent desire of becoming a navigator."
+    text: "Please shut the front door when you leave the office.",
+    expectedText: "Please shut the front door when you leave the office."
   },
   {
     id: "A3",
     type: "sentence-reading",
-    text: "Her exposure to different cultures during her travels broadened her perspective on the world and sparked a newfound passion for painting. With zeal, she joined art classes to refine her skills and push the boundaries of her creativity.",
-    expectedText: "Her exposure to different cultures during her travels broadened her perspective on the world and sparked a newfound passion for painting. With zeal, she joined art classes to refine her skills and push the boundaries of her creativity."
+    text: "Technology is changing how we work, learn, and communicate every single day.",
+    expectedText: "Technology is changing how we work, learn, and communicate every single day."
   },
   {
     id: "A4",
     type: "sentence-reading",
-    text: "The mysterious artifact was discovered deep within the ancient temple ruins by an adventurous archaeologist.",
-    expectedText: "The mysterious artifact was discovered deep within the ancient temple ruins by an adventurous archaeologist."
+    text: "The mysterious wooden box was discovered deep within the ancient ruins.",
+    expectedText: "The mysterious wooden box was discovered deep within the ancient ruins."
   },
   {
     id: "A5",
     type: "sentence-reading",
-    text: "Environmental sustainability has become a critical focus for modern industries striving to reduce carbon emissions.",
-    expectedText: "Environmental sustainability has become a critical focus for modern industries striving to reduce carbon emissions."
+    text: "Subtle nuances in phonetics dictate the cognitive comprehension of spoken dialects.",
+    expectedText: "Subtle nuances in phonetics dictate the cognitive comprehension of spoken dialects."
   },
   {
     id: "A6",
     type: "sentence-reading",
-    text: "Optimism is a key trait that helps individuals navigate through challenging times with resilience and hope.",
-    expectedText: "Optimism is a key trait that helps individuals navigate through challenging times with resilience and hope."
+    text: "Resilience in navigating challenging circumstances fosters structural psychological growth and optimism.",
+    expectedText: "Resilience in navigating challenging circumstances fosters structural psychological growth and optimism."
   },
   {
     id: "A7",
     type: "sentence-reading",
-    text: "Scientific breakthroughs in medicine have significantly increased the life expectancy of global populations.",
-    expectedText: "Scientific breakthroughs in medicine have significantly increased the life expectancy of global populations."
+    text: "The sunny weather is beautiful today.",
+    expectedText: "The sunny weather is beautiful today."
   },
   {
     id: "A8",
     type: "sentence-reading",
-    text: "The orchestra delivered a spectacular performance that left the audience spellbound and cheering for an encore.",
-    expectedText: "The orchestra delivered a spectacular performance that left the audience spellbound and cheering for an encore."
+    text: "She joined the local art class to refine her painting skills and expand her creativity.",
+    expectedText: "She joined the local art class to refine her painting skills and expand her creativity."
   },
   {
     id: "A9",
     type: "sentence-reading",
-    text: "Effective communication is the foundation of healthy personal relationships and successful business collaborations.",
-    expectedText: "Effective communication is the foundation of healthy personal relationships and successful business collaborations."
+    text: "Scientific breakthroughs in genetic medicine significantly mitigate chronic pathological ailments.",
+    expectedText: "Scientific breakthroughs in genetic medicine significantly mitigate chronic pathological ailments."
   },
   {
     id: "A10",
     type: "sentence-reading",
-    text: "Exploring the deep oceans reveals a fascinating world of unique creatures that adapt to extreme pressures.",
-    expectedText: "Exploring the deep oceans reveals a fascinating world of unique creatures that adapt to extreme pressures."
+    text: "Exploring deep oceans reveals a fascinating world of unique underwater creatures.",
+    expectedText: "Exploring the deep oceans reveals a fascinating world of unique underwater creatures."
   },
   // Word Reading (11-15)
   {

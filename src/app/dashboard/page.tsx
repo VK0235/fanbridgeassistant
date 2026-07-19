@@ -26,6 +26,7 @@ export default function DashboardPage() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [assessments, setAssessments] = useState<AssessmentStatus[]>([]);
   const [greeting, setGreeting] = useState("Welcome");
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   useEffect(() => {
     // 1. Get user profile
@@ -98,37 +99,76 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          <div className="flex items-center gap-5 sm:gap-6">
-            <div className="flex items-center gap-3 border-r border-slate-100/80 pr-5 sm:pr-6 text-left">
-              <div className="text-xs font-black text-slate-850 tracking-wide">
-                {user.name}
-              </div>
-              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest hidden sm:block">
-                {user.regNo || "N/A"} • {user.section || "N/A"}
-              </div>
-            </div>
-
+          <div className="flex items-center gap-4 relative">
+            {/* Profile Dropdown Trigger */}
             <button
-              onClick={handleLogout}
-              className="text-slate-400 hover:text-rose-500 transition-colors p-2 rounded-xl hover:bg-rose-50 cursor-pointer flex items-center gap-1.5 text-xs font-bold"
-              title="Sign Out"
+              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-100/60 border border-slate-200/40 backdrop-blur-md transition-all cursor-pointer text-slate-700 active:scale-[0.98]"
             >
-              <span className="hidden sm:inline">Sign Out</span>
+              <div className="bg-gradient-to-tr from-[#000048] to-[#0033a0] text-white font-extrabold text-[10px] w-6 h-6 flex items-center justify-center rounded-lg shadow-sm">
+                {user.name[0]}
+              </div>
+              <span className="text-xs font-bold sm:block hidden select-none">
+                My Profile
+              </span>
               <svg
-                xmlns="http://www.w3.org/2050/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2.5}
-                stroke="currentColor"
-                className="w-4 h-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className={`w-3.5 h-3.5 text-slate-400 transition-transform ${showProfileDropdown ? "rotate-180" : ""}`}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
-                />
+                <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
               </svg>
             </button>
+
+            {/* Dropdown Glass Card */}
+            {showProfileDropdown && (
+              <div className="absolute right-0 top-11 w-64 bg-white/95 backdrop-blur-xl border border-slate-200/50 rounded-2xl shadow-[0_10px_35px_rgba(0,0,80,0.08)] p-5 z-50 animate-fadeIn text-left space-y-3.5">
+                <div className="border-b border-slate-100 pb-3">
+                  <span className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest">Candidate</span>
+                  <div className="text-xs font-black text-slate-800 tracking-wide mt-0.5">{user.name}</div>
+                  <div className="text-[10px] text-slate-400 font-semibold truncate mt-0.5">{user.email}</div>
+                </div>
+
+                <div className="space-y-2.5 text-[10px] font-bold text-slate-500">
+                  <div>
+                    <span className="text-slate-400 block text-[9px] uppercase tracking-widest mb-0.5">Registration No</span>
+                    <span className="text-slate-800 font-extrabold">{user.regNo || "N/A"}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block text-[9px] uppercase tracking-widest mb-0.5">Department</span>
+                    <span className="text-slate-800 truncate block">{user.dept || "N/A"}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block text-[9px] uppercase tracking-widest mb-0.5">Section</span>
+                    <span className="text-[#0033a0] font-black">{user.section || "N/A"}</span>
+                  </div>
+                </div>
+
+                <div className="border-t border-slate-100 pt-3">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer border border-rose-100/50"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="w-3.5 h-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
+                      />
+                    </svg>
+                    Logout Session
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
