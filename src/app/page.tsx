@@ -11,18 +11,18 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#f3f6fa] flex items-center justify-center p-3 sm:p-6 py-6 sm:py-12 relative overflow-hidden">
-      {/* Decorative corporate gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-[#000048]/5 rounded-full blur-[80px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-[#0033a0]/5 rounded-full blur-[80px] pointer-events-none" />
+    <div className="min-h-screen w-full bg-gradient-to-tr from-[#f3f7fc] via-[#eef2f8] to-[#f4f8fc] flex items-center justify-center p-3 sm:p-6 py-6 sm:py-12 relative overflow-hidden">
+      {/* High-fidelity glowing backdrop mesh */}
+      <div className="absolute top-[-15%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-300/20 rounded-full blur-[140px] pointer-events-none animate-pulse" style={{ animationDuration: "14s" }} />
+      <div className="absolute bottom-[-15%] right-[-10%] w-[50vw] h-[50vw] bg-blue-300/15 rounded-full blur-[140px] pointer-events-none animate-pulse" style={{ animationDuration: "18s" }} />
 
-      {/* Main card - optimized for mobile screen heights */}
-      <div className="w-full max-w-[560px] bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-[0_10px_40px_rgba(0,0,80,0.04)] p-5 sm:p-10 relative z-10 text-center flex flex-col justify-between">
+      {/* Main Glass Card - Compact design to fit 100% scroll-free on mobile viewports */}
+      <div className="w-full max-w-[460px] bg-white/50 backdrop-blur-3xl rounded-3xl border border-white/80 shadow-[0_15px_50px_rgba(0,0,80,0.03)] p-5 sm:p-8 relative z-10 text-center flex flex-col justify-between hover:shadow-[0_20px_60px_rgba(0,51,160,0.06)] hover:scale-[1.005] transition-all duration-300">
         
         <div>
-          {/* Cognizant Logo - responsive size */}
-          <div className="flex justify-center mb-4 sm:mb-6">
-            <div className="relative w-44 sm:w-56 h-10 sm:h-12">
+          {/* Brand Logo Header */}
+          <div className="flex justify-center mb-4">
+            <div className="relative w-40 sm:w-48 h-10 hover:scale-[1.02] transition-transform duration-300">
               <Image
                 src="/Cognizant_idqBwjBQXB_1.png"
                 alt="Cognizant Logo"
@@ -33,66 +33,41 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="w-1.5 h-1.5 rounded-full bg-[#0033a0] mx-auto mb-3" />
+          <div className="h-0.5 w-12 bg-[#0033a0]/15 mx-auto mb-4" />
 
-          {/* Heading - text-xl/2xl on mobile, text-3xl on desktop */}
-          <h1 className="text-xl sm:text-3xl font-black text-[#000048] tracking-tight leading-tight mb-1">
+          {/* Typography Header */}
+          <h1 className="text-xl sm:text-2xl font-black text-[#000048] tracking-tight leading-tight mb-1">
             Speech Assessment
           </h1>
-          <p className="text-slate-400 font-bold text-[9px] sm:text-xs uppercase tracking-widest mb-4">
-            Practice room evaluation portal
+          <p className="text-slate-400 font-bold text-[9px] uppercase tracking-widest mb-4">
+            Candidate Practice Portal
           </p>
 
-          {/* Shorter description to avoid mobile overflow */}
-          <p className="text-slate-500 text-xs sm:text-sm font-medium leading-relaxed max-w-md mx-auto mb-5">
-            Evaluate speaking clarity, sentence repetitions, and grammatical control using automated AI speech grading.
+          <p className="text-slate-600 text-xs font-semibold leading-relaxed max-w-sm mx-auto mb-5.5">
+            Evaluate spoken fluency, pronunciation accuracy, and listening comprehension in a secure environment graded by GenAI.
           </p>
 
-          {/* Compact assessment structure overview */}
-          <div className="border border-slate-100 bg-[#f9fafc] rounded-xl p-3.5 text-left mb-6">
-            <h3 className="text-[9px] font-extrabold uppercase tracking-wider text-[#000048]/60 border-b border-slate-150 pb-1.5 mb-2.5">
-              Evaluation structure
-            </h3>
-            
-            <div className="grid grid-cols-2 gap-3 text-[11px] font-bold text-slate-600">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-md bg-[#0033a0]/5 text-[#0033a0] font-black text-[9px] flex items-center justify-center shrink-0">
-                  A
-                </div>
-                <div>
-                  <p className="font-extrabold text-slate-800 text-[10px] leading-tight">Reading & Repeat</p>
-                  <p className="text-[8px] text-slate-400 font-bold">16 mins</p>
-                </div>
+          {/* Company-Grade Horizontal Syllabus Timeline */}
+          <div className="space-y-2 mb-6">
+            <span className="text-[8px] font-extrabold uppercase tracking-widest text-[#000048]/55 block text-center">
+              Assessment Structure
+            </span>
+            <div className="flex items-center justify-between text-[9px] font-extrabold text-slate-500 bg-white/40 border border-white/60 p-2.5 rounded-xl backdrop-blur-md shadow-sm">
+              <div className="flex flex-col items-center flex-1 border-r border-slate-200/50 py-0.5">
+                <span className="text-[#0033a0] font-black text-xs">A</span>
+                <span className="mt-0.5 font-bold tracking-tight text-[9px] text-slate-700">Reading</span>
               </div>
-
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-md bg-[#0033a0]/5 text-[#0033a0] font-black text-[9px] flex items-center justify-center shrink-0">
-                  B
-                </div>
-                <div>
-                  <p className="font-extrabold text-slate-800 text-[10px] leading-tight">Spontaneous Speech</p>
-                  <p className="text-[8px] text-slate-400 font-bold">7 mins</p>
-                </div>
+              <div className="flex flex-col items-center flex-1 border-r border-slate-200/50 py-0.5">
+                <span className="text-[#0033a0] font-black text-xs">B</span>
+                <span className="mt-0.5 font-bold tracking-tight text-[9px] text-slate-700">Speaking</span>
               </div>
-
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-md bg-[#0033a0]/5 text-[#0033a0] font-black text-[9px] flex items-center justify-center shrink-0">
-                  C
-                </div>
-                <div>
-                  <p className="font-extrabold text-slate-800 text-[10px] leading-tight">Grammar & Syntax</p>
-                  <p className="text-[8px] text-slate-400 font-bold">20 mins</p>
-                </div>
+              <div className="flex flex-col items-center flex-1 border-r border-slate-200/50 py-0.5">
+                <span className="text-[#0033a0] font-black text-xs">C</span>
+                <span className="mt-0.5 font-bold tracking-tight text-[9px] text-slate-700">Grammar</span>
               </div>
-
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-md bg-[#0033a0]/5 text-[#0033a0] font-black text-[9px] flex items-center justify-center shrink-0">
-                  D
-                </div>
-                <div>
-                  <p className="font-extrabold text-slate-800 text-[10px] leading-tight">Comprehension</p>
-                  <p className="text-[8px] text-slate-400 font-bold">15 mins</p>
-                </div>
+              <div className="flex flex-col items-center flex-1 py-0.5">
+                <span className="text-[#0033a0] font-black text-xs">D</span>
+                <span className="mt-0.5 font-bold tracking-tight text-[9px] text-slate-700">Listening</span>
               </div>
             </div>
           </div>
@@ -100,10 +75,10 @@ export default function LandingPage() {
 
         {/* CTA and Signature Footer */}
         <div>
-          <div className="flex justify-center mb-5">
+          <div className="flex justify-center mb-5.5">
             <button
               onClick={handleGetStarted}
-              className="w-full sm:w-auto px-8 py-3 bg-[#000048] hover:bg-[#000033] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
+              className="group w-full sm:w-auto px-10 py-3.5 bg-gradient-to-r from-[#000048] to-[#0033a0] hover:brightness-110 text-white font-bold text-xs rounded-xl transition-all shadow-[0_4px_16px_rgba(0,51,160,0.2)] hover:shadow-[0_6px_22px_rgba(0,51,160,0.35)] active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer"
             >
               Get Started
               <svg
@@ -112,7 +87,7 @@ export default function LandingPage() {
                 viewBox="0 0 24 24"
                 strokeWidth={2.5}
                 stroke="currentColor"
-                className="w-3.5 h-3.5"
+                className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-300"
               >
                 <path
                   strokeLinecap="round"
@@ -123,12 +98,12 @@ export default function LandingPage() {
             </button>
           </div>
 
-          <div className="border-t border-slate-100 pt-3 text-center">
-            <span className="text-[8px] font-bold text-slate-400 tracking-[0.15em] block uppercase">
-              Developed by
+          <div className="border-t border-slate-200/40 pt-4 text-center">
+            <span className="text-[8px] font-bold text-slate-400 tracking-[0.2em] block uppercase">
+              Designed & Engineered By
             </span>
             <span 
-              className="text-[#000048] text-sm font-extrabold mt-0.5 block tracking-wide hover:scale-105 transition-transform cursor-default"
+              className="text-[#000048] text-sm font-extrabold mt-1 block tracking-wide hover:scale-[1.04] hover:text-[#0033a0] transition-all cursor-default"
               style={{ fontFamily: "'Playfair Display', Georgia, Cambria, serif", fontStyle: "italic" }}
             >
               Vinay

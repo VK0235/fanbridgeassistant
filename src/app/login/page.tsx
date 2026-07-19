@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import studentData from "../../lib/studentDatabase.json";
@@ -88,16 +88,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#f3f6fa] flex items-center justify-center p-3 sm:p-6 py-6 sm:py-12 relative overflow-hidden">
-      {/* Cognizant Corporate accents */}
-      <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-[#000048]/5 rounded-full blur-[80px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-[#0033a0]/5 rounded-full blur-[80px] pointer-events-none" />
+    <div className="min-h-screen w-full bg-gradient-to-tr from-[#f3f7fc] via-[#eef2f8] to-[#f4f8fc] flex items-center justify-center p-3 sm:p-6 py-6 sm:py-12 relative overflow-hidden">
+      {/* High-fidelity glassmorphism neon blobs */}
+      <div className="absolute top-[-10%] right-[-5%] w-[45vw] h-[45vw] bg-indigo-200/25 rounded-full blur-[100px] pointer-events-none animate-pulse" style={{ animationDuration: "12s" }} />
+      <div className="absolute bottom-[-10%] left-[-5%] w-[45vw] h-[45vw] bg-blue-200/20 rounded-full blur-[110px] pointer-events-none animate-pulse" style={{ animationDuration: "15s" }} />
 
-      <div className="w-full max-w-[480px] bg-white rounded-2xl border border-slate-100 shadow-[0_10px_45px_rgba(0,0,80,0.04)] p-5 sm:p-8 relative z-10">
+      <div className="w-full max-w-[480px] bg-white/60 backdrop-blur-2xl rounded-3xl border border-white/80 shadow-[0_12px_45px_rgba(0,0,80,0.03)] p-6 sm:p-8 relative z-10 hover:shadow-[0_15px_50px_rgba(0,0,80,0.05)] transition-all duration-300">
         
         {/* Cognizant Header */}
-        <div className="flex flex-col items-center text-center mb-5 border-b border-slate-100 pb-4">
-          <div className="mb-3 relative w-40 h-10">
+        <div className="flex flex-col items-center text-center mb-5 border-b border-slate-100/80 pb-4">
+          <div className="mb-3 relative w-40 h-10 hover:scale-[1.02] transition-transform">
             <Image
               src="/Cognizant_idqBwjBQXB_1.png"
               alt="Cognizant Logo"
@@ -136,10 +136,9 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  // Reset status if user changes input to ensure correct re-validation
                   if (isFound) setIsFound(false);
                 }}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0033a0]/15 focus:border-[#0033a0] text-xs transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/60 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0033a0]/15 focus:border-[#0033a0] text-xs transition-all"
                 required
               />
             </div>
@@ -162,11 +161,11 @@ export default function LoginPage() {
             )}
           </div>
 
-          {/* Student Profile Info Section */}
+          {/* Student Profile Info Section (Frosted Glass ID layout) */}
           {isFound && !isSearching && (
-            <div className="border border-slate-100 bg-[#f9fafc] rounded-xl p-4 space-y-3 animate-fadeIn">
+            <div className="border border-white/80 bg-white/40 backdrop-blur-md rounded-2xl p-4.5 space-y-3.5 animate-fadeIn shadow-inner">
               <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#000048]/60 block mb-1">
-                Candidate Information
+                Candidate Credentials
               </span>
 
               <div>
@@ -181,7 +180,7 @@ export default function LoginPage() {
                   type="text"
                   value={studentName}
                   disabled
-                  className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-100/70 text-slate-500 text-[11px] font-semibold focus:outline-none"
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200/50 bg-white/30 text-slate-600 text-[11px] font-bold focus:outline-none"
                 />
               </div>
 
@@ -198,7 +197,7 @@ export default function LoginPage() {
                     type="text"
                     value={regNo}
                     disabled
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-100/70 text-slate-500 text-[11px] font-semibold focus:outline-none"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200/50 bg-white/30 text-slate-600 text-[11px] font-bold focus:outline-none"
                   />
                 </div>
 
@@ -214,7 +213,7 @@ export default function LoginPage() {
                     type="text"
                     value={dept}
                     disabled
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-100/70 text-slate-500 text-[11px] font-semibold focus:outline-none"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200/50 bg-white/30 text-slate-600 text-[11px] font-bold focus:outline-none text-ellipsis overflow-hidden"
                   />
                 </div>
 
@@ -230,7 +229,7 @@ export default function LoginPage() {
                     type="text"
                     value={section}
                     disabled
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-100/70 text-slate-500 text-[11px] font-semibold focus:outline-none"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200/50 bg-white/30 text-[#0033a0] text-[11px] font-bold focus:outline-none"
                   />
                 </div>
               </div>
@@ -243,7 +242,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => handleVerifyEmail()}
                 disabled={isSearching || !email.trim()}
-                className="w-full py-3 bg-[#000048] hover:bg-[#000033] text-white font-bold rounded-xl transition-all shadow-md active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
+                className="w-full py-3 bg-gradient-to-r from-[#000048] to-[#0033a0] hover:brightness-115 text-white font-bold rounded-xl transition-all shadow-[0_4px_16px_rgba(0,51,160,0.2)] hover:shadow-[0_6px_22px_rgba(0,51,160,0.35)] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
               >
                 {isSearching ? (
                   <>
@@ -258,7 +257,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-md active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-xs sm:text-sm"
+                className="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white font-bold rounded-xl transition-all shadow-[0_4px_16px_rgba(16,185,129,0.2)] hover:shadow-[0_6px_22px_rgba(16,185,129,0.35)] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-xs sm:text-sm"
               >
                 {isLoading ? (
                   <>
@@ -274,16 +273,19 @@ export default function LoginPage() {
         </form>
 
         {/* Signature */}
-        <div className="mt-6 border-t border-slate-100/80 pt-4 text-center">
-          <span className="text-[8px] font-bold text-slate-400 tracking-[0.15em] block uppercase">
-            Developed by
+        <div className="mt-6 border-t border-slate-200/40 pt-4 text-center">
+          <span className="text-[8px] font-bold text-slate-400 tracking-[0.2em] block uppercase">
+            Designed & Engineered By
           </span>
           <span 
-            className="text-[#000048] text-sm font-extrabold mt-0.5 block tracking-wide"
+            className="text-[#000048] text-sm font-extrabold mt-1 block tracking-wide hover:scale-105 transition-transform cursor-default"
             style={{ fontFamily: "'Playfair Display', Georgia, Cambria, serif", fontStyle: "italic" }}
           >
             Vinay
           </span>
+          <p className="text-[8px] font-bold text-slate-400 mt-0.5 uppercase tracking-wider">
+            Corporate Assessment Solutions Provider
+          </p>
         </div>
 
       </div>

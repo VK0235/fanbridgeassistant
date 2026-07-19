@@ -19,7 +19,19 @@ export async function POST(req: NextRequest) {
 
     // 1. Send audio to Groq Whisper for transcription
     const whisperFormData = new FormData();
-    const audioFile = new File([file], "audio.webm", { type: file.type || "audio/webm" });
+    
+    // Dynamically adjust filename extension based on MIME type to prevent Groq API codec mismatch errors
+    const mimeType = file.type || "";
+    let fileName = "audio.webm";
+    if (mimeType.includes("mp4")) {
+      fileName = "audio.mp4";
+    } else if (mimeType.includes("ogg")) {
+      fileName = "audio.ogg";
+    } else if (mimeType.includes("wav")) {
+      fileName = "audio.wav";
+    }
+    
+    const audioFile = new File([file], fileName, { type: mimeType || "audio/webm" });
     whisperFormData.append("file", audioFile);
     whisperFormData.append("model", "whisper-large-v3-turbo");
     whisperFormData.append("response_format", "json");

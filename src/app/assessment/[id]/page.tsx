@@ -568,6 +568,35 @@ export default function AssessmentPage({ params }: PageProps) {
     saveProgress("D", 0);
   };
 
+  const switchSection = (targetSec: "A" | "B" | "C" | "D") => {
+    if (isRecording) {
+      stopRecording();
+    }
+    
+    // Clear playback voice
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      setIsTTSPlaying(false);
+    }
+
+    setCurrentSection(targetSec);
+    setSectionIndex(0);
+    
+    if (targetSec === "A") setTimeLeft(960);
+    else if (targetSec === "B") {
+      setTimeLeft(420);
+      setIsPrepPhase(true);
+      setPrepTimeLeft(30);
+      setSpontaneousDuration(60);
+    }
+    else if (targetSec === "C") setTimeLeft(1200);
+    else if (targetSec === "D") setTimeLeft(900);
+    
+    setRecordingBlob(null);
+    setRecordingUrl(null);
+    saveProgress(targetSec, 0);
+  };
+
   const handleListeningSelect = (qId: number, optionIdx: number) => {
     setListeningAnswers((prev) => {
       const updated = { ...prev, [qId]: optionIdx };
@@ -717,10 +746,10 @@ export default function AssessmentPage({ params }: PageProps) {
 
   if (step === "instructions") {
     return (
-      <div className="min-h-screen w-full bg-[#f4f7fc] text-slate-800 font-sans flex flex-col items-center py-10 px-4 sm:px-6">
-        <div className="w-full max-w-3xl bg-white border border-slate-100 shadow-[0_12px_36px_rgba(0,0,0,0.03)] rounded-2xl p-6 sm:p-10">
+      <div className="min-h-screen w-full bg-gradient-to-tr from-[#f3f7fc] via-[#eef2f8] to-[#f4f8fc] text-slate-800 font-sans flex flex-col items-center py-10 px-4 sm:px-6">
+        <div className="w-full max-w-3xl bg-white/60 backdrop-blur-2xl border border-white/80 shadow-[0_12px_45px_rgba(0,0,80,0.03)] rounded-3xl p-6 sm:p-10">
           <div className="flex justify-center mb-6">
-            <div className="relative w-48 h-10">
+            <div className="relative w-48 h-10 hover:scale-[1.02] transition-transform">
               <Image
                 src="/Cognizant_idqBwjBQXB_1.png"
                 alt="Cognizant Logo"
@@ -730,51 +759,51 @@ export default function AssessmentPage({ params }: PageProps) {
             </div>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#000048] tracking-tight mb-4 text-center">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#000048] tracking-tight mb-4 text-center">
             Assigned Assessment Instructions
           </h1>
 
           {user && (
-            <div className="p-4 bg-[#f9fafc] border border-slate-100 rounded-xl mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="p-4 bg-white/40 border border-white/80 rounded-2xl mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-md">
               <div>
-                <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Candidate</span>
-                <span className="text-sm font-extrabold text-slate-700">{user.name}</span>
+                <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-widest">Candidate</span>
+                <span className="text-sm font-black text-slate-800">{user.name}</span>
               </div>
               <div className="grid grid-cols-3 gap-6 text-xs font-bold text-slate-600">
                 <div>
                   <span className="text-slate-400 block text-[9px] uppercase tracking-wider">Reg No</span>
-                  <span>{user.regNo}</span>
+                  <span className="text-slate-800">{user.regNo}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[9px] uppercase tracking-wider">Dept</span>
-                  <span className="truncate max-w-[100px] block">{user.dept === "Computer Science & Engineering" ? "CSE" : user.dept}</span>
+                  <span className="truncate max-w-[100px] block text-slate-800">{user.dept === "Computer Science & Engineering" ? "CSE" : user.dept}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[9px] uppercase tracking-wider">Section</span>
-                  <span>{user.section}</span>
+                  <span className="text-slate-800">{user.section}</span>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100 mb-8 text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-white/40 rounded-2xl border border-white/60 mb-8 text-center backdrop-blur-md">
             <div>
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                 Duration
               </div>
-              <div className="text-base font-extrabold text-slate-700">58 Mins</div>
+              <div className="text-base font-extrabold text-[#0033a0]">58 Mins</div>
             </div>
             <div>
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                 Questions
               </div>
-              <div className="text-base font-extrabold text-slate-700">77 Questions</div>
+              <div className="text-base font-extrabold text-[#0033a0]">77 Questions</div>
             </div>
             <div>
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                 Sections
               </div>
-              <div className="text-base font-extrabold text-slate-700">4 Sections</div>
+              <div className="text-base font-extrabold text-[#0033a0]">4 Sections</div>
             </div>
             <div>
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
@@ -786,21 +815,21 @@ export default function AssessmentPage({ params }: PageProps) {
 
           <div className="space-y-4 mb-8">
             <h3 className="text-base font-bold text-slate-800">Important Mandates</h3>
-            <ul className="space-y-3.5 text-sm text-slate-600 font-medium">
+            <ul className="space-y-3.5 text-sm text-slate-600 font-semibold">
               <li className="flex items-start gap-2.5">
-                <span className="w-5 h-5 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold mt-0.5">
+                <span className="w-5 h-5 bg-indigo-50 border border-indigo-100 text-[#0033a0] rounded-lg flex items-center justify-center text-xs font-bold mt-0.5 shrink-0">
                   1
                 </span>
                 <span>Give the test in a quiet environment. Ambient noise will degrade your score.</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <span className="w-5 h-5 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold mt-0.5">
+                <span className="w-5 h-5 bg-indigo-50 border border-indigo-100 text-[#0033a0] rounded-lg flex items-center justify-center text-xs font-bold mt-0.5 shrink-0">
                   2
                 </span>
                 <span>Wired headset with a microphone is recommended. Avoid computer mic, bluetooth buds, or neckbands.</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <span className="w-5 h-5 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold mt-0.5">
+                <span className="w-5 h-5 bg-indigo-50 border border-indigo-100 text-[#0033a0] rounded-lg flex items-center justify-center text-xs font-bold mt-0.5 shrink-0">
                   3
                 </span>
                 <span>Talk loud and clear. Record your answer and verify/playback before submission. You can re-record if needed!</span>
@@ -808,7 +837,7 @@ export default function AssessmentPage({ params }: PageProps) {
             </ul>
           </div>
 
-          <div className="border border-slate-100 bg-[#f9fafc] rounded-xl p-5 mb-8">
+          <div className="border border-white/60 bg-white/40 backdrop-blur-md rounded-2xl p-5 mb-8">
             <h3 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 text-[#0033a0]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
@@ -819,7 +848,7 @@ export default function AssessmentPage({ params }: PageProps) {
             {isMicAllowed === null && (
               <button
                 onClick={requestMicPermission}
-                className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg cursor-pointer transition"
+                className="px-4 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg cursor-pointer transition"
               >
                 Request Microphone Access
               </button>
@@ -840,7 +869,7 @@ export default function AssessmentPage({ params }: PageProps) {
                   <button
                     onClick={startTestRecording}
                     disabled={testRecording}
-                    className={`px-4 py-2 text-xs font-bold rounded-lg cursor-pointer transition flex items-center gap-2 ${
+                    className={`px-4 py-2.5 text-xs font-bold rounded-xl cursor-pointer transition flex items-center gap-2 ${
                       testRecording
                         ? "bg-rose-500 text-white animate-pulse"
                         : "bg-slate-200 text-slate-700 hover:bg-slate-300"
@@ -866,7 +895,7 @@ export default function AssessmentPage({ params }: PageProps) {
                 setTimeLeft(960);
               }}
               disabled={isMicAllowed === false}
-              className="px-8 py-3.5 bg-[#0f62fe] hover:bg-[#0050e6] text-white font-semibold text-sm rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition shadow-md shadow-blue-500/10 active:scale-[0.99]"
+              className="px-8 py-3.5 bg-gradient-to-r from-[#000048] to-[#0033a0] text-white font-semibold text-sm rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition shadow-md shadow-blue-500/10 active:scale-[0.99] hover:brightness-110"
             >
               Start Assessment
             </button>
@@ -878,8 +907,8 @@ export default function AssessmentPage({ params }: PageProps) {
 
   if (step === "grading") {
     return (
-      <div className="min-h-screen w-full bg-[#f4f7fc] flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white border border-slate-100 shadow-xl rounded-2xl p-8 text-center flex flex-col items-center">
+      <div className="min-h-screen w-full bg-gradient-to-tr from-[#f3f7fc] via-[#eef2f8] to-[#f4f8fc] flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white/60 backdrop-blur-2xl border border-white/80 shadow-xl rounded-2xl p-8 text-center flex flex-col items-center">
           <div className="relative w-20 h-20 mb-6">
             <div className="absolute inset-0 rounded-full border-4 border-slate-100" />
             <div className="absolute inset-0 rounded-full border-4 border-indigo-600 border-t-transparent animate-spin" />
@@ -899,8 +928,8 @@ export default function AssessmentPage({ params }: PageProps) {
     const grades = calculateFinalScores();
 
     return (
-      <div className="min-h-screen w-full bg-[#f4f7fc] text-slate-800 font-sans flex flex-col pb-16">
-        <header className="w-full bg-white border-b border-slate-100 shadow-sm sticky top-0 z-50">
+      <div className="min-h-screen w-full bg-gradient-to-tr from-[#f3f7fc] via-[#eef2f8] to-[#f4f8fc] text-slate-800 font-sans flex flex-col pb-16">
+        <header className="w-full bg-white/45 backdrop-blur-xl border-b border-white/60 shadow-sm sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="relative w-36 h-9">
@@ -917,7 +946,7 @@ export default function AssessmentPage({ params }: PageProps) {
             </div>
             <button
               onClick={handleReturnToDashboard}
-              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-lg transition cursor-pointer"
+              className="px-4 py-2 bg-[#f1f5f9] hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition cursor-pointer"
             >
               Close Report
             </button>
@@ -925,12 +954,12 @@ export default function AssessmentPage({ params }: PageProps) {
         </header>
 
         <main className="max-w-4xl mx-auto w-full px-4 sm:px-6 mt-10">
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-10 mb-8">
+          <div className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/80 shadow-sm p-6 sm:p-10 mb-8">
             <div className="text-center mb-10">
-              <span className="text-xs font-bold text-[#0033a0] bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">
+              <span className="text-xs font-bold text-[#0033a0] bg-indigo-50 border border-indigo-100/50 px-3.5 py-1 rounded-full uppercase tracking-wider">
                 Assessment Certified
               </span>
-              <h1 className="text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">
+              <h1 className="text-3xl font-black text-slate-900 mt-3 tracking-tight">
                 Your Speaking & Language Profile
               </h1>
               <p className="text-slate-500 font-medium mt-1">
@@ -939,7 +968,7 @@ export default function AssessmentPage({ params }: PageProps) {
             </div>
 
             {user && (
-              <div className="p-5 bg-slate-50 border border-slate-150 rounded-2xl mb-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-bold">
+              <div className="p-5 bg-white/40 border border-white/80 rounded-2xl mb-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-bold backdrop-blur-md">
                 <div>
                   <span className="text-slate-400 block text-[9px] uppercase tracking-wider mb-0.5">Candidate</span>
                   <span className="text-slate-800 text-sm font-black">{user.name}</span>
@@ -950,7 +979,7 @@ export default function AssessmentPage({ params }: PageProps) {
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[9px] uppercase tracking-wider mb-0.5">Department</span>
-                  <span className="text-slate-700 text-sm font-black">{user.dept}</span>
+                  <span className="text-slate-700 text-sm font-black truncate block">{user.dept}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[9px] uppercase tracking-wider mb-0.5">Section</span>
@@ -959,7 +988,7 @@ export default function AssessmentPage({ params }: PageProps) {
               </div>
             )}
 
-            <div className="flex flex-col md:flex-row items-center justify-around p-6 bg-slate-50 rounded-2xl border border-slate-100 mb-10 gap-6">
+            <div className="flex flex-col md:flex-row items-center justify-around p-6 bg-white/40 border border-white/80 rounded-2xl mb-10 gap-6 backdrop-blur-md">
               <div className="text-center">
                 <div className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">
                   CEFR Level
@@ -1017,7 +1046,7 @@ export default function AssessmentPage({ params }: PageProps) {
               <h3 className="text-lg font-bold text-slate-800">Sub-Skills Breakdown</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                <div className="p-4 border border-white/60 bg-white/40 rounded-xl">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
                       Pronunciation
@@ -1034,7 +1063,7 @@ export default function AssessmentPage({ params }: PageProps) {
                   </div>
                 </div>
 
-                <div className="p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                <div className="p-4 border border-white/60 bg-white/40 rounded-xl">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
                       Fluency
@@ -1051,7 +1080,7 @@ export default function AssessmentPage({ params }: PageProps) {
                   </div>
                 </div>
 
-                <div className="p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                <div className="p-4 border border-white/60 bg-white/40 rounded-xl">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
                       Grammar & Syntax
@@ -1071,7 +1100,7 @@ export default function AssessmentPage({ params }: PageProps) {
                   </div>
                 </div>
 
-                <div className="p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                <div className="p-4 border border-white/60 bg-white/40 rounded-xl">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
                       Listening Comprehension
@@ -1102,7 +1131,7 @@ export default function AssessmentPage({ params }: PageProps) {
                   {Object.values(speechScores).map((scoreVal, index) => (
                     <div
                       key={index}
-                      className="p-4 border border-slate-100 rounded-xl bg-[#f9fafc]"
+                      className="p-4 border border-white/60 bg-white/40 rounded-xl"
                     >
                       <div className="flex justify-between items-center mb-3">
                         <span className="text-xs font-bold px-2 py-1 bg-slate-200/60 rounded text-slate-600 uppercase">
@@ -1156,7 +1185,7 @@ export default function AssessmentPage({ params }: PageProps) {
                 Developed by
               </span>
               <span 
-                className="text-[#0033a0] text-sm font-bold mt-0.5 block hover:scale-105 transition-transform"
+                className="text-[#000048] text-sm font-bold mt-0.5 block hover:scale-105 transition-transform"
                 style={{ fontFamily: "'Playfair Display', Georgia, Cambria, serif", fontStyle: "italic" }}
               >
                 Vinay
@@ -1175,7 +1204,7 @@ export default function AssessmentPage({ params }: PageProps) {
         const playCount = audioPlayedCount[currentQ.id] || 0;
 
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fadeIn">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <span className="text-xs font-bold text-[#6f42c1] bg-[#f1edfb] px-2.5 py-1 rounded">
                 Section A - {currentSectionATypeLabel()}
@@ -1198,7 +1227,7 @@ export default function AssessmentPage({ params }: PageProps) {
                     className={`px-5 py-3 text-xs font-bold text-white rounded-xl transition flex items-center gap-2 cursor-pointer ${
                       playCount >= 1
                         ? "bg-slate-300 cursor-not-allowed"
-                        : "bg-[#000048] hover:bg-indigo-900"
+                        : "bg-[#000048] hover:bg-indigo-900 shadow-md"
                     }`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
@@ -1209,8 +1238,10 @@ export default function AssessmentPage({ params }: PageProps) {
                 </div>
               </div>
             ) : (
-              <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
+              <div className="p-8 bg-slate-50/70 border border-slate-100 rounded-2xl text-center text-lg sm:text-2xl font-black text-[#000048] leading-relaxed italic tracking-tight relative shadow-inner">
+                <span className="text-4xl text-slate-300 font-serif absolute top-2 left-4 select-none">“</span>
                 {currentQ.text}
+                <span className="text-4xl text-slate-300 font-serif absolute bottom-0 right-4 select-none">”</span>
               </div>
             )}
 
@@ -1218,7 +1249,7 @@ export default function AssessmentPage({ params }: PageProps) {
             <div className="flex flex-col items-center justify-center p-6 space-y-5">
               {isSubmittingQuestion ? (
                 <div className="flex flex-col items-center gap-2 text-xs font-bold text-slate-400 uppercase py-6">
-                  <div className="w-8 h-8 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin" />
+                  <div className="w-8 h-8 rounded-full border-2 border-[#0033a0] border-t-transparent animate-spin" />
                   Analyzing speech via Groq AI...
                 </div>
               ) : (
@@ -1229,13 +1260,13 @@ export default function AssessmentPage({ params }: PageProps) {
                         {isRecording && (
                           <div
                             className="absolute w-24 h-24 bg-rose-100 rounded-full animate-ping pointer-events-none"
-                            style={{ animationDuration: "1.5s" }}
+                            style={{ animationDuration: "1.2s" }}
                           />
                         )}
                         <button
                           onClick={isRecording ? stopRecording : startRecording}
-                          className={`w-16 h-16 rounded-full flex items-center justify-center text-white cursor-pointer shadow-lg active:scale-[0.96] transition-colors relative z-10 ${
-                            isRecording ? "bg-[#ea384d] hover:bg-rose-600" : "bg-[#0f62fe] hover:bg-[#0050e6]"
+                          className={`w-16 h-16 rounded-full flex items-center justify-center text-white cursor-pointer shadow-lg active:scale-[0.96] transition-all relative z-10 ${
+                            isRecording ? "bg-[#ea384d] hover:bg-rose-600 shadow-rose-200" : "bg-[#0f62fe] hover:bg-[#0050e6] shadow-blue-200"
                           }`}
                         >
                           {isRecording ? (
@@ -1253,9 +1284,17 @@ export default function AssessmentPage({ params }: PageProps) {
 
                       <div className="text-xs font-bold uppercase tracking-wider text-slate-400 text-center">
                         {isRecording ? (
-                          <div className="space-y-1">
+                          <div className="space-y-2">
                             <span className="text-rose-600 animate-pulse block">Recording Live... Mic: {micVolume}%</span>
-                            <span className="text-[10px] text-slate-400 tracking-wide font-normal normal-case block">
+                            
+                            {/* Dynamic 25-Second Recording Progress Timer */}
+                            <div className="w-48 bg-slate-100 h-1.5 rounded-full overflow-hidden mx-auto mt-2.5">
+                              <div 
+                                className="bg-rose-500 h-full rounded-full transition-all duration-1000"
+                                style={{ width: `${(recordingTimeLeft / 25) * 100}%` }}
+                              />
+                            </div>
+                            <span className="text-[10px] text-slate-400 tracking-wide font-normal normal-case block mt-1">
                               Auto-submits in: <span className="font-extrabold text-[#0033a0] text-xs">{recordingTimeLeft}s</span>
                             </span>
                           </div>
@@ -1266,7 +1305,7 @@ export default function AssessmentPage({ params }: PageProps) {
                     </>
                   ) : (
                     /* Review & Re-record Panel */
-                    <div className="w-full max-w-sm border border-slate-100 bg-[#f9fafc] p-5 rounded-2xl flex flex-col items-center space-y-4">
+                    <div className="w-full max-w-sm border border-slate-150 bg-[#f9fafc] p-5 rounded-2xl flex flex-col items-center space-y-4">
                       <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full uppercase tracking-wider">
                         Recording Completed
                       </span>
@@ -1302,7 +1341,7 @@ export default function AssessmentPage({ params }: PageProps) {
               )}
             </div>
 
-            {/* Standard navigation skip options (disabled once audio is validated to enforce submission) */}
+            {/* Navigation buttons */}
             {!recordingBlob && (
               <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                 <button
@@ -1321,7 +1360,7 @@ export default function AssessmentPage({ params }: PageProps) {
         const currentQ = selectedTopics[sectionIndex] as Topic;
 
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fadeIn">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <span className="text-xs font-bold text-[#6f42c1] bg-[#f1edfb] px-2.5 py-1 rounded">
                 Section B - Spontaneous Speech
@@ -1331,26 +1370,26 @@ export default function AssessmentPage({ params }: PageProps) {
               </span>
             </div>
 
-            <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider mb-2">
+            <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center relative shadow-inner">
+              <span className="text-[10px] font-bold text-slate-450 block uppercase tracking-widest mb-1.5">
                 Topic for discussion
               </span>
-              <p className="text-base sm:text-lg font-bold text-slate-800 leading-relaxed">
+              <p className="text-base sm:text-lg font-black text-slate-800 leading-relaxed italic">
                 "{currentQ.text}"
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto">
-              <div className={`p-4 border rounded-xl text-center ${isPrepPhase ? "bg-indigo-50/70 border-indigo-200" : "bg-slate-50 border-slate-100 opacity-60"}`}>
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <div className={`p-4 border rounded-2xl text-center ${isPrepPhase ? "bg-indigo-50/70 border-indigo-200" : "bg-slate-50 border-slate-100 opacity-60"}`}>
+                <div className="text-[10px] font-bold text-slate-455 uppercase tracking-wider">
                   Prep Time
                 </div>
                 <div className="text-2xl font-black text-slate-800">
                   {prepTimeLeft}s
                 </div>
               </div>
-              <div className={`p-4 border rounded-xl text-center ${!isPrepPhase ? "bg-rose-50/70 border-rose-200" : "bg-slate-50 border-slate-100 opacity-60"}`}>
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <div className={`p-4 border rounded-2xl text-center ${!isPrepPhase ? "bg-rose-50/70 border-rose-200 animate-pulse" : "bg-slate-50 border-slate-100 opacity-60"}`}>
+                <div className="text-[10px] font-bold text-slate-455 uppercase tracking-wider">
                   Speak Time
                 </div>
                 <div className="text-2xl font-black text-slate-800">
@@ -1362,48 +1401,51 @@ export default function AssessmentPage({ params }: PageProps) {
             <div className="flex flex-col items-center justify-center p-4">
               {isSubmittingQuestion ? (
                 <div className="flex flex-col items-center gap-2 text-xs font-bold text-slate-400 uppercase py-6">
-                  <div className="w-8 h-8 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin" />
+                  <div className="w-8 h-8 rounded-full border-2 border-[#0033a0] border-t-transparent animate-spin" />
                   Analyzing response...
                 </div>
               ) : isPrepPhase ? (
-                <div className="text-center py-4 space-y-3">
-                  <p className="text-sm font-semibold text-slate-500">
-                    Use this time to plan your points. You can skip prep to start speaking immediately.
+                <div className="text-center py-4 space-y-3.5">
+                  <p className="text-sm font-semibold text-slate-550 leading-relaxed max-w-sm mx-auto">
+                    Use this prep time to plan your points. You can skip to start recording immediately.
                   </p>
                   <button
                     onClick={skipPrepPhase}
-                    className="px-4 py-2 bg-[#000048] hover:bg-[#000033] text-white font-bold text-xs rounded-lg transition cursor-pointer"
+                    className="px-5 py-2.5 bg-[#000048] hover:bg-[#000033] text-white font-bold text-xs rounded-xl transition cursor-pointer"
                   >
                     Start Speaking Now
                   </button>
                 </div>
               ) : (
                 /* Speak Phase layout */
-                <div className="text-center space-y-4">
+                <div className="text-center space-y-4 w-full">
                   {!recordingBlob ? (
                     <>
                       <div className="relative flex items-center justify-center">
                         <div className="absolute w-20 h-20 bg-rose-100 rounded-full animate-ping pointer-events-none" />
-                        <div className="w-14 h-14 bg-[#ea384d] rounded-full flex items-center justify-center text-white relative z-10 cursor-pointer" onClick={stopRecording}>
+                        <button
+                          onClick={stopRecording}
+                          className="w-14 h-14 bg-[#ea384d] hover:bg-rose-600 rounded-full flex items-center justify-center text-white relative z-10 cursor-pointer shadow-md shadow-rose-200"
+                        >
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 animate-pulse">
                             <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
                             <path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 0010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.75 6.75 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.75 6.75 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
                           </svg>
-                        </div>
+                        </button>
                       </div>
-                      <p className="text-xs font-bold uppercase tracking-wider text-rose-500">
+                      <p className="text-xs font-bold uppercase tracking-wider text-rose-500 animate-pulse">
                         Recording live... Speak now! ({micVolume}% mic)
                       </p>
                       <button
                         onClick={stopRecording}
-                        className="px-3 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-[10px] uppercase rounded transition"
+                        className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-[10px] uppercase rounded-lg transition"
                       >
                         Finish & Stop
                       </button>
                     </>
                   ) : (
                     /* Review & Re-record Panel */
-                    <div className="w-full max-w-sm border border-slate-100 bg-[#f9fafc] p-5 rounded-2xl flex flex-col items-center space-y-4">
+                    <div className="w-full max-w-sm border border-slate-150 bg-[#f9fafc] p-5 rounded-2xl flex flex-col items-center space-y-4 mx-auto">
                       <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full uppercase tracking-wider">
                         Topic Recording Saved
                       </span>
@@ -1464,7 +1506,7 @@ export default function AssessmentPage({ params }: PageProps) {
         const selectedOption = grammarAnswers[currentQ.id];
 
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fadeIn">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <span className="text-xs font-bold text-[#6f42c1] bg-[#f1edfb] px-2.5 py-1 rounded">
                 Section C - Grammar: {currentQ.category}
@@ -1474,29 +1516,29 @@ export default function AssessmentPage({ params }: PageProps) {
               </span>
             </div>
 
-            <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-              <p className="text-base font-bold text-slate-800">
+            <div className="p-5 bg-slate-50 border border-slate-100 rounded-2xl relative shadow-inner">
+              <p className="text-base font-bold text-slate-800 leading-relaxed">
                 {currentQ.question}
               </p>
             </div>
 
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {currentQ.options.map((option, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleGrammarSelect(currentQ.id, idx)}
-                  className={`w-full p-4 text-left text-sm font-semibold border rounded-xl transition cursor-pointer flex items-center justify-between ${
+                  className={`w-full p-4.5 text-left text-xs sm:text-sm font-bold border rounded-2xl transition-all cursor-pointer flex items-center justify-between hover:scale-[1.005] hover:bg-slate-50/50 ${
                     selectedOption === idx
-                      ? "bg-indigo-50 border-indigo-300 text-indigo-900 shadow-sm"
-                      : "bg-white border-slate-150 hover:bg-slate-50 text-slate-700"
+                      ? "bg-indigo-50/80 border-[#0033a0] text-indigo-900 shadow-md"
+                      : "bg-white border-slate-150 text-slate-700 shadow-sm"
                   }`}
                 >
                   <span>{option}</span>
                   <div
-                    className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                    className={`w-4.5 h-4.5 rounded-full border flex items-center justify-center shrink-0 ${
                       selectedOption === idx
-                        ? "border-indigo-600 bg-indigo-600"
-                        : "border-slate-300"
+                        ? "border-[#0033a0] bg-[#0033a0]"
+                        : "border-slate-350"
                     }`}
                   >
                     {selectedOption === idx && (
@@ -1511,13 +1553,13 @@ export default function AssessmentPage({ params }: PageProps) {
               <button
                 onClick={handleSectionCPrev}
                 disabled={sectionIndex === 0}
-                className="px-5 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-xs rounded-lg transition disabled:opacity-30 cursor-pointer"
+                className="px-5 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-xs rounded-xl transition disabled:opacity-30 cursor-pointer"
               >
                 Previous
               </button>
               <button
                 onClick={handleSectionCNext}
-                className="px-6 py-2.5 bg-[#0f62fe] hover:bg-[#0050e6] text-white font-bold text-xs rounded-lg transition cursor-pointer active:scale-[0.98]"
+                className="px-6 py-2.5 bg-[#0f62fe] hover:bg-[#0050e6] text-white font-bold text-xs rounded-xl transition cursor-pointer active:scale-[0.98]"
               >
                 {sectionIndex === sectionCQuestions.length - 1 ? "Next Section" : "Next Question"}
               </button>
@@ -1530,7 +1572,7 @@ export default function AssessmentPage({ params }: PageProps) {
         const playCount = audioPlayedCount[currentPassage.id] || 0;
 
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fadeIn">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <span className="text-xs font-bold text-[#6f42c1] bg-[#f1edfb] px-2.5 py-1 rounded">
                 Section D - Listening Comprehension
@@ -1540,7 +1582,7 @@ export default function AssessmentPage({ params }: PageProps) {
               </span>
             </div>
 
-            <div className="p-5 border border-indigo-100 bg-indigo-50/20 rounded-2xl text-center space-y-4">
+            <div className="p-6 border border-indigo-150 bg-indigo-50/20 rounded-2xl text-center space-y-4">
               <h4 className="text-sm font-bold text-slate-800">
                 {currentPassage.title}
               </h4>
@@ -1552,10 +1594,10 @@ export default function AssessmentPage({ params }: PageProps) {
                 <button
                   onClick={() => speakReferenceText(currentPassage.content, currentPassage.id)}
                   disabled={playCount >= 1 || isTTSPlaying}
-                  className={`px-5 py-3 text-xs font-bold text-white rounded-xl transition flex items-center gap-2 cursor-pointer ${
+                  className={`px-5 py-3 text-xs font-bold text-white rounded-xl transition flex items-center gap-2 cursor-pointer shadow-md ${
                     playCount >= 1
-                      ? "bg-slate-300 cursor-not-allowed"
-                      : "bg-[#000048] hover:bg-[#000033]"
+                      ? "bg-slate-350 cursor-not-allowed"
+                      : "bg-[#000048] hover:bg-indigo-900"
                   }`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
@@ -1566,31 +1608,31 @@ export default function AssessmentPage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="space-y-5 pt-3">
+            <div className="space-y-6 pt-3">
               {currentPassage.questions.map((q) => {
                 const selectedOption = listeningAnswers[q.id];
 
                 return (
-                  <div key={q.id} className="space-y-2 border-b border-slate-100 pb-4 last:border-b-0 last:pb-0">
+                  <div key={q.id} className="space-y-3 border-b border-slate-100 pb-5 last:border-b-0 last:pb-0">
                     <p className="text-sm font-bold text-slate-800">
                       {q.id}. {q.question}
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                       {q.options.map((option, idx) => (
                         <button
                           key={idx}
                           onClick={() => handleListeningSelect(q.id, idx)}
-                          className={`p-3 text-left text-xs font-semibold border rounded-lg transition cursor-pointer flex items-center justify-between ${
+                          className={`p-4 text-left text-xs font-bold border rounded-2xl transition-all cursor-pointer flex items-center justify-between hover:scale-[1.005] hover:bg-slate-50/50 ${
                             selectedOption === idx
-                              ? "bg-indigo-50 border-indigo-300 text-indigo-900 shadow-sm"
-                              : "bg-white border-slate-100 hover:bg-slate-50 text-slate-600"
+                              ? "bg-indigo-50/80 border-[#0033a0] text-indigo-900 shadow-md"
+                              : "bg-white border-slate-100 text-slate-655 shadow-sm"
                           }`}
                         >
                           <span>{option}</span>
                           <div
-                            className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
+                            className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
                               selectedOption === idx
-                                ? "border-indigo-600 bg-indigo-600"
+                                ? "border-[#0033a0] bg-[#0033a0]"
                                 : "border-slate-300"
                             }`}
                           >
@@ -1610,13 +1652,13 @@ export default function AssessmentPage({ params }: PageProps) {
               <button
                 onClick={handleSectionDPrev}
                 disabled={sectionIndex === 0}
-                className="px-5 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-xs rounded-lg transition disabled:opacity-30 cursor-pointer"
+                className="px-5 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-xs rounded-xl transition disabled:opacity-30 cursor-pointer"
               >
                 Previous
               </button>
               <button
                 onClick={handleSectionDNext}
-                className="px-6 py-2.5 bg-[#0f62fe] hover:bg-[#0050e6] text-white font-bold text-xs rounded-lg transition cursor-pointer active:scale-[0.98]"
+                className="px-6 py-2.5 bg-[#0f62fe] hover:bg-[#0050e6] text-white font-bold text-xs rounded-xl transition cursor-pointer active:scale-[0.98]"
               >
                 {sectionIndex === sectionDPassages.length - 1 ? "Finish & Submit" : "Next Passage"}
               </button>
@@ -1628,9 +1670,13 @@ export default function AssessmentPage({ params }: PageProps) {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#f4f7fc] text-slate-800 font-sans flex flex-col">
-      {/* Top Test Header */}
-      <header className="w-full bg-white border-b border-slate-100 shadow-sm px-4 sm:px-6 py-4 flex items-center justify-between sticky top-0 z-40">
+    <div className="min-h-screen w-full bg-gradient-to-tr from-[#f3f7fc] via-[#eef2f8] to-[#f4f8fc] text-slate-800 font-sans flex flex-col pb-12 relative overflow-hidden">
+      {/* High-fidelity glowing backdrop mesh */}
+      <div className="absolute top-[-15%] right-[-10%] w-[50vw] h-[50vw] bg-indigo-200/20 rounded-full blur-[140px] pointer-events-none animate-pulse" style={{ animationDuration: "14s" }} />
+      <div className="absolute bottom-[-15%] left-[-10%] w-[50vw] h-[50vw] bg-blue-200/15 rounded-full blur-[140px] pointer-events-none animate-pulse" style={{ animationDuration: "18s" }} />
+
+      {/* Top Test Header (Glassmorphic) */}
+      <header className="w-full bg-white/45 backdrop-blur-xl border-b border-white/60 shadow-sm px-4 sm:px-6 py-4 flex items-center justify-between sticky top-0 z-40 transition-all">
         <div className="flex items-center gap-2.5">
           <div className="relative w-36 h-9">
             <Image
@@ -1640,21 +1686,21 @@ export default function AssessmentPage({ params }: PageProps) {
               className="object-contain"
             />
           </div>
-          <span className="text-xs font-bold text-slate-400 border-l border-slate-200 pl-3">
+          <span className="text-xs font-bold text-slate-400 border-l border-slate-200/60 pl-3">
             CTS Practice Assessment - {assessmentId}
           </span>
         </div>
 
         {user && (
           <div className="hidden lg:flex items-center gap-3">
-            <div className="bg-slate-50 text-slate-500 font-bold text-[9px] px-2.5 py-1.5 rounded-lg border border-slate-100 uppercase tracking-wide">
+            <div className="bg-white/40 backdrop-blur-md text-slate-500 font-bold text-[9px] px-2.5 py-1.5 rounded-lg border border-white/80 uppercase tracking-wide">
               Reg No: <span className="text-slate-800 font-extrabold">{user.regNo}</span>
             </div>
-            <div className="bg-slate-50 text-slate-500 font-bold text-[9px] px-2.5 py-1.5 rounded-lg border border-slate-100 uppercase tracking-wide">
+            <div className="bg-white/40 backdrop-blur-md text-slate-500 font-bold text-[9px] px-2.5 py-1.5 rounded-lg border border-white/88 uppercase tracking-wide">
               Dept: <span className="text-slate-800 font-extrabold">{user.dept === "Computer Science & Engineering" ? "CSE" : user.dept}</span>
             </div>
-            <div className="bg-slate-50 text-slate-500 font-bold text-[9px] px-2.5 py-1.5 rounded-lg border border-slate-100 uppercase tracking-wide">
-              Section: <span className="text-slate-800 font-extrabold">{user.section}</span>
+            <div className="bg-white/40 backdrop-blur-md text-slate-500 font-bold text-[9px] px-2.5 py-1.5 rounded-lg border border-white/88 uppercase tracking-wide">
+              Section: <span className="text-[#0033a0] font-black">{user.section}</span>
             </div>
           </div>
         )}
@@ -1664,8 +1710,8 @@ export default function AssessmentPage({ params }: PageProps) {
             Section: <span className="text-slate-700">{currentSection}</span>
           </div>
 
-          <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-slate-500 animate-pulse">
+          <div className="flex items-center gap-2 bg-white/40 backdrop-blur-md border border-white/80 px-3 py-1.5 rounded-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-[#0033a0] animate-pulse">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span className="text-sm font-extrabold text-slate-700">
@@ -1675,104 +1721,125 @@ export default function AssessmentPage({ params }: PageProps) {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col md:flex-row gap-6 p-4 sm:p-6 lg:p-8">
-        {/* Test Sidebar Progress Tracker */}
-        <aside className="w-full md:w-64 bg-white border border-slate-100 rounded-xl p-5 shadow-sm space-y-5 shrink-0 self-start">
+      <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col md:flex-row gap-6 p-4 sm:p-6 lg:p-8 relative z-10">
+        {/* Test Sidebar Progress Tracker (Glassmorphic) */}
+        <aside className="w-full md:w-64 bg-white/60 backdrop-blur-xl border border-white/80 rounded-2xl p-5 shadow-sm space-y-5 shrink-0 self-start order-2 md:order-1">
           {user && (
-            <div className="p-3 bg-slate-50 rounded-lg border border-slate-100 text-left">
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Student</div>
+            <div className="p-3 bg-white/40 border border-white/80 rounded-xl text-left">
+              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Student</div>
               <div className="text-xs font-extrabold text-slate-700 truncate">{user.name}</div>
             </div>
           )}
 
           <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">
               Progress Tracker
             </h3>
-            <div className="text-sm font-bold text-slate-700">
+            <div className="text-sm font-black text-slate-800">
               CTS Communication
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div>
+          <div className="space-y-3.5">
+            {/* Section A Indicator */}
+            <div 
+              onClick={() => switchSection("A")}
+              className="cursor-pointer hover:bg-slate-100/40 p-2 rounded-xl transition-all duration-200 border border-transparent hover:border-slate-200/50"
+              title="Switch to Section A: Reading"
+            >
               <div className="flex items-center justify-between text-xs font-bold mb-1">
-                <span className={currentSection === "A" ? "text-indigo-600" : "text-slate-500"}>
+                <span className={currentSection === "A" ? "text-[#0033a0] font-black" : "text-slate-500"}>
                   Section A: Reading
                 </span>
                 <span className="text-slate-400">
                   {Object.values(speechScores).filter(s => s.questionId.startsWith("A")).length}/{sectionAQuestions.length}
                 </span>
               </div>
-              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div className="w-full bg-slate-200/50 h-1.5 rounded-full overflow-hidden">
                 <div
-                  className="bg-indigo-600 h-full rounded-full transition-all"
+                  className={`h-full rounded-full transition-all ${currentSection === "A" ? "bg-gradient-to-r from-[#000048] to-[#0033a0] shadow-[0_0_8px_rgba(0,51,160,0.3)]" : "bg-indigo-600"}`}
                   style={{ width: `${(Object.values(speechScores).filter(s => s.questionId.startsWith("A")).length / sectionAQuestions.length) * 100}%` }}
                 />
               </div>
             </div>
 
-            <div>
+            {/* Section B Indicator */}
+            <div 
+              onClick={() => switchSection("B")}
+              className="cursor-pointer hover:bg-slate-100/40 p-2 rounded-xl transition-all duration-200 border border-transparent hover:border-slate-200/50"
+              title="Switch to Section B: Spontaneous"
+            >
               <div className="flex items-center justify-between text-xs font-bold mb-1">
-                <span className={currentSection === "B" ? "text-indigo-600" : "text-slate-500"}>
+                <span className={currentSection === "B" ? "text-[#0033a0] font-black" : "text-slate-500"}>
                   Section B: Spontaneous
                 </span>
                 <span className="text-slate-400">
                   {Object.values(speechScores).filter(s => s.type === "spontaneous-speech").length}/{selectedTopics.length}
                 </span>
               </div>
-              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div className="w-full bg-slate-200/50 h-1.5 rounded-full overflow-hidden">
                 <div
-                  className="bg-indigo-600 h-full rounded-full transition-all"
+                  className={`h-full rounded-full transition-all ${currentSection === "B" ? "bg-gradient-to-r from-[#000048] to-[#0033a0] shadow-[0_0_8px_rgba(0,51,160,0.3)]" : "bg-indigo-600"}`}
                   style={{ width: `${(Object.values(speechScores).filter(s => s.type === "spontaneous-speech").length / selectedTopics.length) * 100}%` }}
                 />
               </div>
             </div>
 
-            <div>
+            {/* Section C Indicator */}
+            <div 
+              onClick={() => switchSection("C")}
+              className="cursor-pointer hover:bg-slate-100/40 p-2 rounded-xl transition-all duration-200 border border-transparent hover:border-slate-200/50"
+              title="Switch to Section C: Grammar"
+            >
               <div className="flex items-center justify-between text-xs font-bold mb-1">
-                <span className={currentSection === "C" ? "text-indigo-600" : "text-slate-500"}>
+                <span className={currentSection === "C" ? "text-[#0033a0] font-black" : "text-slate-500"}>
                   Section C: Grammar
                 </span>
                 <span className="text-slate-400">
                   {Object.keys(grammarAnswers).length}/{sectionCQuestions.length}
                 </span>
               </div>
-              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div className="w-full bg-slate-200/50 h-1.5 rounded-full overflow-hidden">
                 <div
-                  className="bg-indigo-600 h-full rounded-full transition-all"
+                  className={`h-full rounded-full transition-all ${currentSection === "C" ? "bg-gradient-to-r from-[#000048] to-[#0033a0] shadow-[0_0_8px_rgba(0,51,160,0.3)]" : "bg-indigo-600"}`}
                   style={{ width: `${(Object.keys(grammarAnswers).length / sectionCQuestions.length) * 100}%` }}
                 />
               </div>
             </div>
 
-            <div>
+            {/* Section D Indicator */}
+            <div 
+              onClick={() => switchSection("D")}
+              className="cursor-pointer hover:bg-slate-100/40 p-2 rounded-xl transition-all duration-200 border border-transparent hover:border-slate-200/50"
+              title="Switch to Section D: Listening"
+            >
               <div className="flex items-center justify-between text-xs font-bold mb-1">
-                <span className={currentSection === "D" ? "text-indigo-600" : "text-slate-500"}>
+                <span className={currentSection === "D" ? "text-[#0033a0] font-black" : "text-slate-500"}>
                   Section D: Listening
                 </span>
                 <span className="text-slate-400">
                   {Object.keys(listeningAnswers).length}/12
                 </span>
               </div>
-              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div className="w-full bg-slate-200/50 h-1.5 rounded-full overflow-hidden">
                 <div
-                  className="bg-indigo-600 h-full rounded-full transition-all"
+                  className={`h-full rounded-full transition-all ${currentSection === "D" ? "bg-gradient-to-r from-[#000048] to-[#0033a0] shadow-[0_0_8px_rgba(0,51,160,0.3)]" : "bg-indigo-600"}`}
                   style={{ width: `${(Object.keys(listeningAnswers).length / 12) * 100}%` }}
                 />
               </div>
             </div>
           </div>
 
-          <div className="pt-2 border-t border-slate-100 text-[10px] text-slate-400 font-semibold text-center">
+          <div className="pt-2 border-t border-slate-100 text-[10px] text-slate-400 font-semibold text-center leading-normal">
             Once submitted, audio inputs are final and graded instantly.
           </div>
-          <div className="pt-4 border-t border-slate-100/50 text-center">
-            <span className="text-[10px] font-bold text-slate-400 tracking-[0.12em] block">
-              Developed by
+          
+          <div className="pt-4 border-t border-slate-200/40 text-center">
+            <span className="text-[8px] font-bold text-slate-400 tracking-[0.2em] block uppercase">
+              Designed & Engineered By
             </span>
             <span 
-              className="text-[#0033a0] text-sm font-bold mt-0.5 block hover:scale-105 transition-transform"
+              className="text-[#000048] text-xs font-extrabold mt-0.5 block tracking-wider hover:scale-105 hover:text-[#0033a0] transition-all cursor-default"
               style={{ fontFamily: "'Playfair Display', Georgia, Cambria, serif", fontStyle: "italic" }}
             >
               Vinay
@@ -1780,7 +1847,8 @@ export default function AssessmentPage({ params }: PageProps) {
           </div>
         </aside>
 
-        <main className="flex-1 bg-white border border-slate-100 shadow-sm rounded-xl p-5 sm:p-8 self-start">
+        {/* Main Question Card (Glassmorphic) */}
+        <main className="flex-1 bg-white/60 backdrop-blur-xl border border-white/80 shadow-sm rounded-3xl p-5 sm:p-8 self-start order-1 md:order-2">
           {renderAssessmentContent()}
         </main>
       </div>
