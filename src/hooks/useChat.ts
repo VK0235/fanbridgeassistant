@@ -26,17 +26,19 @@ export function useChat(
   selectedLanguage: string,
   userMode: UserMode
 ): ChatHook {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => [
+    { role: "assistant", content: WELCOME_MESSAGES[userMode] },
+  ]);
   const [chatInput, setChatInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [detectedIntent, setDetectedIntent] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Set welcome message when persona changes
-  useEffect(() => {
-    const welcome = WELCOME_MESSAGES[userMode];
-    setMessages([{ role: "assistant", content: welcome }]);
-  }, [userMode]);
+  const [prevUserMode, setPrevUserMode] = useState<UserMode>(userMode);
+  if (userMode !== prevUserMode) {
+    setPrevUserMode(userMode);
+    setMessages([{ role: "assistant", content: WELCOME_MESSAGES[userMode] }]);
+  }
 
   // Auto-scroll chat to bottom on new messages
   useEffect(() => {

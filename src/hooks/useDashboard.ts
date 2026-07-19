@@ -18,10 +18,14 @@ export function useDashboard(venueId: string): DashboardHook {
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [prevVenueId, setPrevVenueId] = useState(venueId);
+  if (venueId !== prevVenueId) {
+    setPrevVenueId(venueId);
+    setIsLoading(true);
+  }
+
   const fetchDashboard = useCallback(
     (silent = false) => {
-      if (!silent) setIsLoading(true);
-
       fetch(`/api/dashboard/${venueId}`)
         .then((res) => res.json())
         .then((data: DashboardResponse & { error?: string }) => {
@@ -36,7 +40,7 @@ export function useDashboard(venueId: string): DashboardHook {
   );
 
   useEffect(() => {
-    fetchDashboard();
+    fetchDashboard(true);
     const timer = setInterval(() => {
       fetchDashboard(true);
     }, DASHBOARD_POLL_INTERVAL_MS);

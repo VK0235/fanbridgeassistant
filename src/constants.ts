@@ -88,6 +88,8 @@ export const ECO_PERCENTAGES: Record<string, { carbon: number; solar: number }> 
 /** Fallback eco percentages for unknown venues. */
 export const DEFAULT_ECO_PERCENTAGES = { carbon: 80, solar: 30 } as const;
 
+export const DEFAULT_VENUE_ID = "metlife";
+
 // ---------------------------------------------------------------------------
 // User Persona Configuration
 // ---------------------------------------------------------------------------

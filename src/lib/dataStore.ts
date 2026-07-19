@@ -1,18 +1,17 @@
 import fs from "fs";
 import path from "path";
 import type { StadiumContext, Venue, Operations, Analytics, MatchScheduleEntry } from "../types";
+import { DEFAULT_VENUE_ID } from "../constants";
 
-let cachedContext: StadiumContext | null = null;
+const filePath = path.join(process.cwd(), "data", "stadium_context.json");
+
+// Read and parse JSON database once at module initialization to prevent runtime event-loop blocking
+let cachedContext: StadiumContext = JSON.parse(fs.readFileSync(filePath, "utf-8")) as StadiumContext;
 
 /**
  * Loads and caches the stadium context JSON database.
- * Uses a simple in-memory cache to avoid repeated filesystem reads.
  */
 export function loadStadiumContext(): StadiumContext {
-  if (cachedContext) return cachedContext;
-  const filePath = path.join(process.cwd(), "data", "stadium_context.json");
-  const fileContent = fs.readFileSync(filePath, "utf-8");
-  cachedContext = JSON.parse(fileContent) as StadiumContext;
   return cachedContext;
 }
 
@@ -27,7 +26,7 @@ export function getAllVenues(): Venue[] {
  */
 export function getVenue(venueId?: string): Venue {
   const ctx = loadStadiumContext();
-  const target = venueId || ctx.default_venue || "metlife";
+  const target = venueId || ctx.default_venue || DEFAULT_VENUE_ID;
   const venue = ctx.venues.find((v) => v.id === target);
   return venue || ctx.venues[0];
 }
@@ -49,5 +48,5 @@ export function getMatchSchedule(): MatchScheduleEntry[] {
 
 /** Invalidates the in-memory cache, forcing a re-read on next access. */
 export function invalidateCache(): void {
-  cachedContext = null;
+  cachedContext = JSON.parse(fs.readFileSync(filePath, "utf-8")) as StadiumContext;
 }
