@@ -15,8 +15,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "FanBridge AI - FIFA World Cup 2026",
-  description: "Unified GenAI-powered stadium intelligence platform.",
+  title: "Cognizant Practice Speech Assessment",
+  description: "Automated candidate language and speech evaluation portal.",
 };
 
 export default function RootLayout({
