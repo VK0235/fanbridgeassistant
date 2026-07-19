@@ -1,39 +1,53 @@
 import fs from "fs";
 import path from "path";
+import type { StadiumContext, Venue, Operations, Analytics, MatchScheduleEntry } from "../types";
 
-let cachedContext: any = null;
+let cachedContext: StadiumContext | null = null;
 
-export function loadStadiumContext() {
+/**
+ * Loads and caches the stadium context JSON database.
+ * Uses a simple in-memory cache to avoid repeated filesystem reads.
+ */
+export function loadStadiumContext(): StadiumContext {
   if (cachedContext) return cachedContext;
   const filePath = path.join(process.cwd(), "data", "stadium_context.json");
   const fileContent = fs.readFileSync(filePath, "utf-8");
-  cachedContext = JSON.parse(fileContent);
+  cachedContext = JSON.parse(fileContent) as StadiumContext;
   return cachedContext;
 }
 
-export function getAllVenues() {
+/** Returns the full list of venues from the stadium context. */
+export function getAllVenues(): Venue[] {
   return loadStadiumContext().venues;
 }
 
-export function getVenue(venueId?: string) {
+/**
+ * Finds and returns a specific venue by ID.
+ * Falls back to the default venue, then to the first venue in the list.
+ */
+export function getVenue(venueId?: string): Venue {
   const ctx = loadStadiumContext();
   const target = venueId || ctx.default_venue || "metlife";
-  const venue = ctx.venues.find((v: any) => v.id === target);
+  const venue = ctx.venues.find((v) => v.id === target);
   return venue || ctx.venues[0];
 }
 
-export function getOperations() {
+/** Returns the global operations data (medical points, alerts, volunteer posts). */
+export function getOperations(): Operations {
   return loadStadiumContext().operations;
 }
 
-export function getAnalytics() {
-  return loadStadiumContext().analytics || {};
+/** Returns the global analytics data. */
+export function getAnalytics(): Analytics {
+  return loadStadiumContext().analytics;
 }
 
-export function getMatchSchedule() {
-  return loadStadiumContext().match_schedule || [];
+/** Returns the match schedule array. */
+export function getMatchSchedule(): MatchScheduleEntry[] {
+  return loadStadiumContext().match_schedule;
 }
 
-export function invalidateCache() {
+/** Invalidates the in-memory cache, forcing a re-read on next access. */
+export function invalidateCache(): void {
   cachedContext = null;
 }

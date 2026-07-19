@@ -1,4 +1,5 @@
 import { getVenue, getOperations, loadStadiumContext } from "./dataStore";
+import type { Gate } from "../types";
 
 export const INTENT_KEYWORDS: Record<string, string[]> = {
   emergency: [
@@ -43,11 +44,16 @@ export const INTENT_KEYWORDS: Record<string, string[]> = {
   ],
 };
 
+/** Intent classification priority order (emergency takes precedence). */
 export const INTENT_ORDER = [
   "emergency", "navigation", "crowd", "accessibility",
   "transport", "sustainability", "staff_ops", "multilingual",
-];
+] as const;
 
+/**
+ * Classifies a user message into an intent category using keyword matching.
+ * Returns "general" if no intent-specific keywords are found.
+ */
 export function classifyIntent(message: string): string {
   const lowered = message.toLowerCase();
   for (const intent of INTENT_ORDER) {
@@ -58,12 +64,16 @@ export function classifyIntent(message: string): string {
   return "general";
 }
 
+/**
+ * Builds a JSON context snippet for the LLM prompt based on the classified intent.
+ * Provides only the relevant venue data to minimize token usage.
+ */
 export function buildContextSnippet(intent: string, venueId?: string): string {
   const venue = getVenue(venueId);
   const ops = getOperations();
   const ctx = loadStadiumContext();
 
-  const mapping: Record<string, any> = {
+  const mapping: Record<string, object> = {
     navigation: {
       venue_name: venue.name,
       city: venue.city,
@@ -78,7 +88,7 @@ export function buildContextSnippet(intent: string, venueId?: string): string {
     accessibility: {
       venue_name: venue.name,
       accessibility: venue.accessibility,
-      gates: venue.gates.filter((g: any) => g.accessible),
+      gates: venue.gates.filter((g: Gate) => g.accessible),
       note: "Wheelchair, sensory, companion seating — be specific and empathetic.",
     },
     transport: {

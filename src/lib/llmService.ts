@@ -1,5 +1,13 @@
 import { buildContextSnippet } from "./intent";
 import { getVenue, getOperations } from "./dataStore";
+import type { Venue, Operations, HistoryTurn, LLMReplyResult } from "../types";
+import {
+  DEFAULT_LLM_MODEL,
+  DEFAULT_LLM_TEMPERATURE,
+  DEFAULT_LLM_MAX_TOKENS,
+  DEFAULT_CACHE_TTL_SECONDS,
+  MAX_LLM_HISTORY_TURNS,
+} from "../constants";
 
 const FAN_SYSTEM_PROMPT = `You are FanBridge AI, a friendly and knowledgeable on-site companion for fans at FIFA World Cup 2026.
 
@@ -37,7 +45,13 @@ interface CacheEntry {
 }
 const cache: Map<string, CacheEntry> = new Map();
 
-function getCacheKey(message: string, language: string, intent: string, venueId: string | null, mode: string): string {
+function getCacheKey(
+  message: string,
+  language: string,
+  intent: string,
+  venueId: string | null,
+  mode: string
+): string {
   return [message.trim().toLowerCase(), language, intent, venueId || "default", mode].join("||");
 }
 
@@ -51,29 +65,32 @@ function getCached(key: string, ttl: number): string | null {
   return entry.reply;
 }
 
-export interface HistoryTurn {
-  role: "user" | "assistant";
-  content: string;
-}
-
-// Fully dynamic semantic local compiler querying dataStore JSONs (NO hardcoding)
-function getLocalMockReply(message: string, language: string, intent: string, venueId: string | null, mode: string): string {
-  const venue = getVenue(venueId || "metlife");
-  const ops = getOperations();
+/**
+ * Generates a local fallback reply by querying the JSON datastore.
+ * Used when the Groq API key is missing or the API call fails.
+ */
+function getLocalMockReply(
+  _message: string,
+  language: string,
+  intent: string,
+  venueId: string | null,
+  _mode: string
+): string {
+  const venue: Venue = getVenue(venueId || "metlife");
+  const ops: Operations = getOperations();
   const langLower = language.toLowerCase();
   const isSpanish = langLower.includes("span") || langLower.includes("es");
   const isFrench = langLower.includes("fren") || langLower.includes("fr");
 
   if (!venue) {
-    return isSpanish 
-      ? "Asistente FanBridge activo. Por favor, seleccione un estadio." 
+    return isSpanish
+      ? "Asistente FanBridge activo. Por favor, seleccione un estadio."
       : "FanBridge Assistant active. Please select a valid stadium.";
   }
 
-  // 1. EMERGENCY INTENT
   if (intent === "emergency") {
-    const aed = ops.aed_locations && ops.aed_locations[0] ? ops.aed_locations[0] : "Gate A Area";
-    const med = ops.medical_points && ops.medical_points[0] ? ops.medical_points[0].location : "Section 100 Concourse";
+    const aed = ops.aed_locations?.[0] ?? "Gate A Area";
+    const med = ops.medical_points?.[0]?.location ?? "Section 100 Concourse";
     if (isSpanish) {
       return `1. Mantenga la calma y diríjase a la salida más cercana.\n2. La asistencia médica está en: ${med}.\n3. El desfibrilador (AED) más cercano está en: ${aed}.`;
     }
@@ -83,9 +100,8 @@ function getLocalMockReply(message: string, language: string, intent: string, ve
     return `1. Please stay calm and follow directions to the nearest exit loop.\n2. Stadium medical support is active at: ${med}.\n3. The nearest AED unit is mounted at: ${aed}.`;
   }
 
-  // 2. NAVIGATION INTENT
   if (intent === "navigation") {
-    const gate = venue.gates && venue.gates[0] ? venue.gates[0] : { id: "Gate A", wait_minutes: 4, type: "General" };
+    const gate = venue.gates?.[0] ?? { id: "Gate A", wait_minutes: 4, type: "General" };
     if (isSpanish) {
       return `Para llegar a su sección, camine por los pasillos principales. Por ejemplo, la ${gate.id} (${gate.type}) está abierta con una espera de ${gate.wait_minutes} minutos.`;
     }
@@ -95,9 +111,8 @@ function getLocalMockReply(message: string, language: string, intent: string, ve
     return `To access your seating section, navigate via the main concourse rings. For instance, ${gate.id} (${gate.type}) has a current wait time of ${gate.wait_minutes} minutes.`;
   }
 
-  // 3. CROWD INTENT
   if (intent === "crowd") {
-    const zone = venue.crowd_zones && venue.crowd_zones[0] ? venue.crowd_zones[0] : { zone: "Concourse", density: "medium", density_pct: 60 };
+    const zone = venue.crowd_zones?.[0] ?? { zone: "Concourse", density: "medium", density_pct: 60 };
     if (isSpanish) {
       return `Flujo de multitud en vivo: la zona ${zone.zone} está al ${zone.density_pct}% de ocupación (${zone.density}). Se recomienda buscar rutas alternativas si hay demoras.`;
     }
@@ -107,10 +122,9 @@ function getLocalMockReply(message: string, language: string, intent: string, ve
     return `Live crowd density: ${zone.zone} is currently at ${zone.density_pct}% load (${zone.density}). We suggest checking alternative paths to bypass the crowd.`;
   }
 
-  // 4. ACCESSIBILITY INTENT
   if (intent === "accessibility") {
-    const sensory = venue.accessibility && venue.accessibility.sensory_room ? venue.accessibility.sensory_room : "Concourse Level 2";
-    const elevator = venue.accessibility && venue.accessibility.elevator_locations && venue.accessibility.elevator_locations[0] ? venue.accessibility.elevator_locations[0] : "Gate A";
+    const sensory = venue.accessibility?.sensory_room ?? "Concourse Level 2";
+    const elevator = venue.accessibility?.elevator_locations?.[0] ?? "Gate A";
     if (isSpanish) {
       return `Accesibilidad en ${venue.name}: Hay ascensores en ${elevator} y una sala de relajación sensorial en: ${sensory}.`;
     }
@@ -120,36 +134,36 @@ function getLocalMockReply(message: string, language: string, intent: string, ve
     return `Accessibility support at ${venue.name}: Elevators are available at ${elevator}. The sensory quiet room is located at: ${sensory}.`;
   }
 
-  // 5. SUSTAINABILITY INTENT
   if (intent === "sustainability") {
-    const tip = venue.sustainability && venue.sustainability.carbon_tip ? venue.sustainability.carbon_tip : "Utilize recycle slots.";
-    const target = venue.sustainability && venue.sustainability.waste_diversion_target ? venue.sustainability.waste_diversion_target : "80%";
+    const tip = venue.sustainability?.carbon_tip ?? "Utilize recycle slots.";
+    const target = venue.sustainability?.waste_diversion_target ?? "80%";
     if (isSpanish) {
       return `Sostenibilidad en ${venue.name}: El objetivo de reciclaje es ${target}. Recomendación ecológica: ${tip}`;
     }
     return `Sustainability at ${venue.name}: Target is ${target} diversion. Green recommendation: ${tip}`;
   }
 
-  // 6. TRANSPORT INTENT
   if (intent === "transport") {
-    const shuttle = venue.transport && venue.transport.shuttle_routes && venue.transport.shuttle_routes[0] 
-      ? venue.transport.shuttle_routes[0] 
-      : { route: "Metro", from: "Station", status: "on-time" };
+    const shuttle = venue.transport?.shuttle_routes?.[0] ?? {
+      route: "Metro",
+      from: "Station",
+      status: "on-time",
+    };
     if (isSpanish) {
       return `Tránsito de transporte: El ${shuttle.route} desde ${shuttle.from} está operando actualmente (${shuttle.status}). Se recomienda usar transporte ecológico.`;
     }
     return `Eco transit options: ${shuttle.route} from ${shuttle.from} is reported ${shuttle.status}. We advise fans to take public transit paths.`;
   }
 
-  // 7. STAFF OPS INTENT
   if (intent === "staff_ops") {
-    const post = ops.volunteer_posts && ops.volunteer_posts[0] ? ops.volunteer_posts[0] : { id: "Post 1", role: "Support", zone: "Concourse" };
+    const post = ops.volunteer_posts?.[0] ?? { id: "Post 1", role: "Support", zone: "Concourse" };
     if (isSpanish) {
       return `Operaciones del personal: El puesto de voluntarios ${post.id} (${post.role}) está asignado a ${post.zone}. Monitoree las colas de entrada.`;
     }
     return `Operations dispatch: Volunteer post ${post.id} (${post.role}) is stationed at ${post.zone}. Please monitor queue capacities.`;
   }
 
+  // General fallback
   if (isSpanish) {
     return `Hola, bienvenido a ${venue.name} en ${venue.city}. ¿Cómo puedo ayudarle con mapas del estadio, accesibilidad, tiempos de espera de puertas o transporte?`;
   }
@@ -159,6 +173,10 @@ function getLocalMockReply(message: string, language: string, intent: string, ve
   return `Hello, welcome to ${venue.name} in ${venue.city}. How can I assist you with concourse maps, accessibility, gate clearance queues, or transit routes today?`;
 }
 
+/**
+ * Gets an AI reply via Groq API or local fallback.
+ * Implements response caching (except for emergency intents).
+ */
 export async function getReply(
   message: string,
   language: string,
@@ -166,12 +184,12 @@ export async function getReply(
   history: HistoryTurn[],
   venueId?: string,
   userMode = "fan"
-): Promise<{ reply: string; cached: boolean }> {
+): Promise<LLMReplyResult> {
   const apiKey = process.env.GROQ_API_KEY || "";
-  const ttl = parseInt(process.env.CACHE_TTL_S || "30");
+  const ttl = parseInt(process.env.CACHE_TTL_S || String(DEFAULT_CACHE_TTL_SECONDS));
   const cacheKey = getCacheKey(message, language, intent, venueId || null, userMode);
 
-  // Return cached result if available
+  // Return cached result if available (never cache emergency responses)
   if (intent !== "emergency") {
     const cachedReply = getCached(cacheKey, ttl);
     if (cachedReply) {
@@ -179,7 +197,7 @@ export async function getReply(
     }
   }
 
-  // Safe fallback if API Key is not set or configured
+  // Fallback to local inference when API key is not configured
   if (!apiKey) {
     const reply = getLocalMockReply(message, language, intent, venueId || null, userMode);
     if (intent !== "emergency") {
@@ -188,9 +206,9 @@ export async function getReply(
     return { reply, cached: false };
   }
 
-  const model = process.env.LLM_MODEL || "llama-3.1-8b-instant";
-  const temperature = parseFloat(process.env.LLM_TEMPERATURE || "0.4");
-  const maxTokens = parseInt(process.env.LLM_MAX_TOKENS || "300");
+  const model = process.env.LLM_MODEL || DEFAULT_LLM_MODEL;
+  const temperature = parseFloat(process.env.LLM_TEMPERATURE || String(DEFAULT_LLM_TEMPERATURE));
+  const maxTokens = parseInt(process.env.LLM_MAX_TOKENS || String(DEFAULT_LLM_MAX_TOKENS));
 
   const contextSnippet = buildContextSnippet(intent, venueId);
   const isOps = ["staff", "volunteer", "organizer"].includes(userMode);
@@ -201,7 +219,7 @@ export async function getReply(
 
   const messages = [
     { role: "system", content: systemPrompt },
-    ...history.slice(-6).map((turn) => ({ role: turn.role, content: turn.content })),
+    ...history.slice(-MAX_LLM_HISTORY_TURNS).map((turn) => ({ role: turn.role, content: turn.content })),
     { role: "user", content: message },
   ];
 
@@ -236,7 +254,7 @@ export async function getReply(
 
     return { reply, cached: false };
   } catch (error) {
-    console.error("Groq API call failed, using mock fallback:", error);
+    console.error("Groq API call failed, using local fallback:", error);
     const reply = getLocalMockReply(message, language, intent, venueId || null, userMode);
     return { reply, cached: false };
   }
